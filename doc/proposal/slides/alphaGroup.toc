@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{\scshape Motivation}{1}{0}{1}
+\beamer@sectionintoc {2}{\scshape Problem}{3}{0}{2}
+\beamer@subsectionintoc {2}{1}{Online Policy Training}{3}{0}{2}
+\beamer@sectionintoc {3}{\scshape Experiment}{8}{0}{3}
