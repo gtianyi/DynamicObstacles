@@ -1,0 +1,13 @@
+$ All lines start with $ are comments, you can skip it.
+$
+$ This is a sample problem update file, which is a
+$ output of simulator module, and input for algorithms
+$ module
+$
+$ This file contain all updated dynamic obstacles, start
+$ with one line contain a char "*" followed by the time that
+$ simulator write to this file. Then each following line
+$ specify one obstacle which is declare in <index x y>.
+*2017-10-09 23:49:50
+0 1 2
+1 1 3

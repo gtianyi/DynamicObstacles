@@ -1,0 +1,24 @@
+$ All lines start with $ are comments, you can skip it
+$
+$ This is a sample stochastic problem initialization file,
+$ which is a output of simulator module, and input for
+$ algorithms module
+$
+$ map size: row column
+4 3
+$ number of static & dynamic obstacles
+2 3
+$ total number of states
+1000
+$ start state
+0
+$ goal states, split by space
+609 587 299 877
+$ Then list all states. Each state is declared by
+$ <index, robot position, static obstacle 1 pos, static
+$ obstacle 2 pos,..., dynamic obstacle 1 pos, dynamic
+$ obstacle 2 pos,...>
+0 2 2 2 3 3 3 4 4 5 5
+1 2 3 4 5 7 5 3 1 2 2
+
+
