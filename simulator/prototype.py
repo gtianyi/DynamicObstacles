@@ -2,8 +2,8 @@ import random
 
 random.seed(13)
 
-width = 4
-height = 4
+width = 6
+height = 6
 robotLoc = [0, 0]
 goalLoc = [width - 1, height - 1]
 staticObstacles, dynamicObstacles = [], []
