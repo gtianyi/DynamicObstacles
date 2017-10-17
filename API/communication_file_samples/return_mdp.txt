@@ -3,32 +3,13 @@ $
 $ This is a sample stochastic algorithm output file,
 $ which is a input for the simulator module.
 $
-$ This file specifies the action to take in each state, one
-$ per line, : the action for state 0 is listed on the first
-$ line, the action for state 1 on the second, and so on. For
-$ state with no actions available, the corresponding line is
-$ left blank. Each return start with one line contain a char
-$ "*" followed by the time that algorithm module write to this
-$ file.
-$ actions are u d l r s
-*2017-10-09 23:49:50
-u
-u
-u
-u
-r
-r
-r
-l
-l
-s
-s
-r
-r
-
-s
-s
-l
-l
-l
+$ This file specifies the action to take in each state,
+$ separate by space, : the action for state 0 is listed on the first
+$ char, the action for state 1 on the second, and so on. For
+$ state with no actions available, the corresponding char is
+$ x.
+$ actions are u d l r s and map to 0-3:
+$ s u d r l
+$ 0 1 2 3 4
+1 2 3 0 1 1 1 1 1 1 1 
 

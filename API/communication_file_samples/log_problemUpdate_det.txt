@@ -4,11 +4,9 @@ $ This is a sample problem update file, which is a
 $ output of simulator module, and input for algorithms
 $ module
 $
-$ This file contain agent position and all updated dynamic obstacles, start
+$ This log file contain agent position and all updated dynamic obstacles, start
 $ with one line contain a char "*" followed by the time that
-$ simulator write to this file. Then each following line
+$ algorithm write to this file. Then each following line
 $ specify by x y for agent Dobstacle1 Dobstalce2 ....
-$
-$ When algorithm read this file, it will clear the file and
-$ write the record into a log file
+*2017-10-09 23:49:50
 0 1 1 2 1 3
