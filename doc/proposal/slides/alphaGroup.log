@@ -1,9 +1,8 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.22)  2 OCT 2017 15:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.23)  21 OCT 2017 05:58
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
-**\input alphaGroup.tex
+**\nonstopmode\input alphaGroup.tex
 (./alphaGroup.tex (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasercs.sty
 Package: beamerbasercs 2015/03/08 (rcs-revision 368aa9ba9d38)
@@ -1107,17 +1106,17 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 178.
 Here is how much of TeX's memory you used:
  20403 strings out of 493029
  409004 string characters out of 6136234
- 486509 words of memory out of 5000000
+ 486504 words of memory out of 5000000
  23439 multiletter control sequences out of 15000+600000
  21126 words of font info for 63 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,19n,65p,397b,740s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,19n,65p,409b,740s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msam7.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on alphaGroup.pdf (8 pages, 467123 bytes).
+Output written on alphaGroup.pdf (8 pages, 467124 bytes).
 PDF statistics:
  331 PDF objects out of 1000 (max. 8388607)
  292 compressed objects within 3 object streams
