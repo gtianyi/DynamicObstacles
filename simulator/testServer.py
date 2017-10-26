@@ -1,5 +1,6 @@
 import socket
 import sys
+import json
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,9 +24,9 @@ while True:
         # while True:
         data = connection.recv(2048)
         print ( 'received "%s"' % data)
-            # if data:
-            #     print ( 'sending data back to the client')
-            #     connection.sendall(data)
+        if data:
+            print ( 'sending data back to the client')
+            connection.sendall(data)
             # else:
             #     print(  'no more data from', client_address)
             #     break
