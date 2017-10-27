@@ -23,35 +23,20 @@ struct AlgParameters{
     int simNum = 10;
 };
 
-struct Problem{
+struct Message{
+    string msg;
     int num_row;
     int num_column;
     int num_staticObs;
     int num_dynamicObs;
     vector<Position>  staticObs;
     vector<Position>  dynamicObs;
-    Position start;
+    Position agentPos;
     Position goal;
 };
-        
 
-class ActionNode{
-public:
-ActionNode(int _id):aid(_id){}
-  int aid;
-  vector<pair<int, double> > ns;
-};
-
-class StateNode{
-public:
-StateNode(int _id,double _reward,int _isterminal):
-  sid(_id),reward(_reward),isterminal(_isterminal),
-      u(0),prevu(0),besta(-1){}
-  int sid;
-  double reward;
-  int isterminal;
-  double u;
-  double prevu;
-  int besta;
-  vector<ActionNode*> actionList;
+class State{
+  public:
+    double reward = 0;
+    vector<double> QvalueofActions = {0, 0, 0, 0, 0};
 };

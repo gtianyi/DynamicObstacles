@@ -55,6 +55,12 @@ int main(int argc,  char const *argv[])
     valread =  read( new_socket,  buffer,  1024);
     printf("%s\n", buffer );
     send(new_socket,  hello,  strlen(hello),  0 );
-    printf("Hello message sent\n");
+    char *msg = "0 1 2 2 3 3";
+    while(true){
+        valread =  read( new_socket,  buffer,  1024);
+        printf("%s\n", buffer );
+        send(new_socket,  msg, strlen(msg),  0 );
+        printf("Hello message sent\n");
+    }
     return 0;
 }

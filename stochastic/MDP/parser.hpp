@@ -7,9 +7,7 @@
 */
 #include "cxxopts.hpp"
 #include <vector>
-#include "struct.hpp"
 using namespace std;
-// #include "rl.hpp"
 
 AlgParameters parseArguments(int argc, char *argv[]) {
     AlgParameters p;
@@ -24,18 +22,21 @@ AlgParameters parseArguments(int argc, char *argv[]) {
     return p;
 }
 
-Problem initializeProblem(int sock){
-    string startMsg = "start";
-    send(sock, startMsg.c_str(), startMsg.length(), 0);
-    cout <<  "start message sent..." <<  endl;
+string sendRequestAndGetReturn(int sock, string req){
+    send(sock, req.c_str(), req.length(), 0);
+    cout <<  "Sent message: " << req <<  endl;
     char buffer[1024] =  {0};
     read(sock, buffer, 1024);
     cout << "received: " << buffer << endl;
-   
-    cout << "initializing problem..." << endl;
-    Problem prob;
+    return string(buffer);
+}
+
+Message getProblemFromSocket(int sock){
+    string msg = sendRequestAndGetReturn(sock, "start");
     
-    stringstream ss(buffer);
+    cout << "initializing problem..." << endl;
+    Message prob;
+    stringstream ss(msg);
     ss >> prob.num_row;
     ss >> prob.num_column;
     ss >> prob.num_staticObs;
@@ -52,22 +53,18 @@ Problem initializeProblem(int sock){
         ss >> p.y;
         prob.dynamicObs.push_back(p);
     }
-    ss >> prob.start.x;
-    ss >> prob.start.y;
+    ss >> prob.agentPos.x;
+    ss >> prob.agentPos.y;
     ss >> prob.goal.x;
     ss >> prob.goal.y;
     return prob;
 }
 
-    
-   
-	
-    // if(_alg=="vi"){		
-    //   value_iteration myvi(_gamma,_epsilon,starts,stateList,_upperU);
-    //   myvi.run();
-    // }
-    // else if(_alg=="rtdp"){
-    //   rtdp myrtdp(_gamma,_simulationNum,starts,stateList,_upperU);
-    //   myrtdp.run();
-    // }
+Message getStateByActionViaSocket(int sock, string action){
+    string msg = sendRequestAndGetReturn(sock,action);
+    Message state;
+    state.msg = msg;
+    // might need other thing here as well
+    return state;
+}
 

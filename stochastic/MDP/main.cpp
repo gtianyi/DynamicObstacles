@@ -16,7 +16,9 @@
 #include <iostream> 
 #include <unistd.h>
 #include <climits>
+#include "struct.hpp"
 #include "parser.hpp"
+#include "rl.hpp"
 using namespace std;
 
 #define PORT 3000
@@ -62,6 +64,8 @@ int main(int argc,  char *argv[])
     if(sock == -1) return -1;
 
     auto paramenters = parseArguments(argc, argv);
-    auto problem = initializeProblem(sock);
+    auto problem = getProblemFromSocket(sock);
+    Solver solver(paramenters, problem);
+    solver.run(sock);
     return 0;
 }
