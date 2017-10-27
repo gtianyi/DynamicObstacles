@@ -7,7 +7,7 @@
 */ 
 
 #include <vector>
-// using namespace std;
+using namespace std;
 
 struct Position{
     int x;
@@ -20,7 +20,7 @@ struct Position{
 struct AlgParameters{
     string alg = "qlearning";
     double gamma = 1.0;
-    int simNum = 0;
+    int simNum = 10;
 };
 
 struct Problem{

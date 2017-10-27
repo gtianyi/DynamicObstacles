@@ -8,7 +8,7 @@
 #include "cxxopts.hpp"
 #include <vector>
 #include "struct.hpp"
-
+using namespace std;
 // #include "rl.hpp"
 
 AlgParameters parseArguments(int argc, char *argv[]) {
