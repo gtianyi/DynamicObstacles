@@ -1,0 +1,2 @@
+Server is listening to 127.0.0.1:3000
+All the packets sent and received through socket are bit streams encoded in UTF-8
