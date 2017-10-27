@@ -66,6 +66,7 @@ int main(int argc,  char *argv[])
     auto paramenters = parseArguments(argc, argv);
     auto problem = getProblemFromSocket(sock);
     Solver solver(paramenters, problem);
+    solver.training(sock);
     solver.run(sock);
     return 0;
 }

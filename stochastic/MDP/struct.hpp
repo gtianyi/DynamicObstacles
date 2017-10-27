@@ -18,7 +18,7 @@ struct Position{
 
 
 struct AlgParameters{
-    string alg = "qlearning";
+    string alg = "random";
     double gamma = 1.0;
     int simNum = 10;
 };
@@ -37,6 +37,8 @@ struct Message{
 
 class State{
   public:
-    double reward = 0;
-    vector<double> QvalueofActions = {0, 0, 0, 0, 0};
+    double reward = -1;
+    int bestAction = 0;
+    double bestQ;
+    vector<double> Q = {0, 0, 0, 0, 0};
 };

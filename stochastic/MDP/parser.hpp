@@ -60,11 +60,8 @@ Message getProblemFromSocket(int sock){
     return prob;
 }
 
-Message getStateByActionViaSocket(int sock, string action){
-    string msg = sendRequestAndGetReturn(sock,action);
-    Message state;
-    state.msg = msg;
+string getStateByActionViaSocket(int sock, string action){
+    return sendRequestAndGetReturn(sock,action);
     // might need other thing here as well
-    return state;
 }
 

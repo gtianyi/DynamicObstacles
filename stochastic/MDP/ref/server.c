@@ -55,12 +55,23 @@ int main(int argc,  char const *argv[])
     valread =  read( new_socket,  buffer,  1024);
     printf("%s\n", buffer );
     send(new_socket,  hello,  strlen(hello),  0 );
-    char *msg = "0 1 2 2 3 3";
-    while(true){
+    int e = 15;
+    while(e > 0){
+        e--;
+        int a = 0;
+        char *msg = "0 1 2 2 3 3";
+        while(a < 15){
+            valread =  read( new_socket,  buffer,  1024);
+            printf("%s\n", buffer );
+            send(new_socket,  msg, strlen(msg),  0 );
+            printf("Hello message sent\n");
+            a++;
+        }
+        if(e % 4 == 0) msg = "win";
+        else msg = "lose";
         valread =  read( new_socket,  buffer,  1024);
         printf("%s\n", buffer );
         send(new_socket,  msg, strlen(msg),  0 );
-        printf("Hello message sent\n");
     }
     return 0;
 }
