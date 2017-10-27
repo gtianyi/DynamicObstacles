@@ -31,6 +31,9 @@ for i in range(2):
             print ('received "%s"' % data)
     # finally:
     #     pass
-    finally:
-        print ('closing socket')
-        sock.close()
+    except:
+        pass
+
+    # finally:
+print ('closing socket')
+# sock.close()
