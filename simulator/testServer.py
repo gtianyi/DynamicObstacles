@@ -24,6 +24,7 @@ while True:
         # while True:
         data = connection.recv(2048)
         print ( 'received "%s"' % data)
+        print("parse value {}".format(data.decode('utf-8')))
         if data:
             print ( 'sending data back to the client')
             connection.sendall(data)
