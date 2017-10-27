@@ -70,7 +70,7 @@ private:
                 }
                 else if(msg == "win"){
                     reward = 1000;
-                    nextQ = -1000;
+                    nextQ = 1000;
                 }
                 else{
                     if(states.find(msg) != states.end()){
