@@ -24,7 +24,7 @@ using namespace std;
 #define PORT 3000
 int sock = 0;
 
-void createSocketReturnID(){
+void createSocket(){
     struct sockaddr_in address;
     struct sockaddr_in serv_addr;
     char buffer[1024] = {0};
@@ -60,7 +60,7 @@ void createSocketReturnID(){
 
 int main(int argc,  char *argv[])
 {
-    createSocketReturnID();
+    createSocket();
     if(sock == -1) return -1;
 
     auto paramenters = parseArguments(argc, argv);
