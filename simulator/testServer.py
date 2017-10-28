@@ -1,6 +1,6 @@
 import socket
 import sys
-import json
+
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,6 +24,7 @@ while True:
         # while True:
         data = connection.recv(2048)
         print ( 'received "%s"' % data)
+        print("parse value {}".format(data.decode('utf-8')))
         if data:
             print ( 'sending data back to the client')
             connection.sendall(data)
