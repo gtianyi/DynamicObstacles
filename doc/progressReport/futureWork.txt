@@ -17,7 +17,8 @@
   2.2 future:
       a. dynamic obstacle movement prediction
       b. real-time search algorithm: LSS-LRTA*
-
+      c. lots of experiments
+      
 3.Stochastic algorithm:
   3.1 current progress:
       a. socket-based communication with simulator
@@ -27,6 +28,7 @@
       b. improve q-value look up table to value
          approximation function
       c. LSPI
+      d. lots of experiments	
 
 4.Theoretical proof:
   4.1 current progress:
@@ -36,4 +38,5 @@
          $\sum_{s'}P(s'|s,a) \dot r(s') =
           -\sum_i cost_i \dot P_i$
   4.2 future:
-      b. theoretically prove the claim
+      a. theoretically prove the claim
+      b. show a lot of experiments result that support the proof
