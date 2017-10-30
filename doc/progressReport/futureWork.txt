@@ -1,0 +1,39 @@
+1.Simulator:
+  1.1 current progress:
+      a. text-based visualization
+      b. socket-based communication with algorithm modules
+      c. real-time mode
+      d. simulation mode
+  1.2 future work:
+      a. Graphical interface: web-based or python graphic
+      b. configurable movement speed of both agent and
+         dynamic obstacles
+
+2.Deterministic algorithm:
+  2.1 current progress:
+      a. socket-based communication with simulator
+      b. implemented A* algorithm that treat dynamic obstacle
+        as static obstacle.
+  2.2 future:
+      a. dynamic obstacle movement prediction
+      b. real-time search algorithm: LSS-LRTA*
+
+3.Stochastic algorithm:
+  3.1 current progress:
+      a. socket-based communication with simulator
+      b. implemented offline training with Q-learning and Sarsa
+  3.2 future:
+      a. bring offline training to online training
+      b. improve q-value look up table to value
+         approximation function
+      c. LSPI
+
+4.Theoretical proof:
+  4.1 current progress:
+      a. idea: assume the system terminate when the agent
+         hit an obstacle or achieve goal position, then the
+         following equation holds:
+         $\sum_{s'}P(s'|s,a) \dot r(s') =
+          -\sum_i cost_i \dot P_i$
+  4.2 future:
+      b. theoretically prove the claim
