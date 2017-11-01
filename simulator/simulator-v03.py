@@ -225,11 +225,11 @@ if __name__ == "__main__":
     # print(game.dump('init'))
     # print(game.dump())
 
-    for i in range(10):
+    while True:
         random.seed(13)
         game = Grid()
 
-        for i in range(7):
+        while True:
             if not game.agent.actionQueue:
                 data = connection.recv(2048).decode("utf-8")
                 game.agent.fetchActions(data)
