@@ -2,10 +2,7 @@ import socket
 import random
 import time
 from collections import deque
-
-random.seed(13)
-timeframe = 0.5
-PRINTOUT = False
+import argparse
 
 class Grid:
     def __init__(self, row=6, col=6):
@@ -217,17 +214,27 @@ def createSocket():
 
 
 if __name__ == "__main__":
+    random.seed(13)
+    timeframe = 0.5
+    PRINTOUT = False
+    SEEDED = False
+
+    parser = argparse.ArgumentParser(description='Start a simulator training server.')
+    parser.add_argument('-s','--seed', action='store_true',default=False, help='Import seed for random numbers')
+    parser.add_argument('-p','--plot', action='store_true',default=False,help='Turn on simple plot')
+    args = parser.parse_args()
+    PRINTOUT = vars(args)['plot']
+    SEEDED = vars(args)['seed']
+
     connection = createSocket()
     game = Grid()
-    # print(game.agent.getLocation())
     data = connection.recv(2048).decode("utf-8")
     if data == "start":
         connection.sendall(game.dump('init').encode("utf-8"))
-    # print(game.dump('init'))
-    # print(game.dump())
 
     while True:
-        # random.seed(13)
+        if SEEDED:
+            random.seed(13)
         game = Grid()
 
         while True:
