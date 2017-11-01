@@ -112,7 +112,7 @@ class Grid:
 
     def simplePlot(self):
         cache = {}
-        cache[tuple(self.agent.getLocation())] = 'E'
+        cache[tuple(self.agent.getLocation())] = 'A'
         cache[tuple(self.goal.getLocation())] = 'G'
         for i in self.dynamicObstacles:
             cache[tuple(i.getLocation())] = 'Y'
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     # print(game.dump())
 
     while True:
-        # random.seed(13)
+        random.seed(13)
         game = Grid()
 
         while True:
