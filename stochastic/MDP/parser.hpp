@@ -24,16 +24,15 @@ AlgParameters parseArguments(int argc, char *argv[]) {
 
 string sendRequestAndGetReturn(int sock, string req){
     send(sock, req.c_str(), req.length(), 0);
-    cout <<  "Sent message: " << req <<  endl;
+    // cout <<  "Sent message: " << req <<  endl;
     char buffer[1024] =  {0};
     read(sock, buffer, 1024);
-    cout << "received: " << buffer << endl;
+    // cout << "received: " << buffer << endl;
     return string(buffer);
 }
 
 Message getProblemFromSocket(int sock){
     string msg = sendRequestAndGetReturn(sock, "start");
-    
     cout << "initializing problem..." << endl;
     Message prob;
     stringstream ss(msg);
@@ -41,20 +40,20 @@ Message getProblemFromSocket(int sock){
     ss >> prob.num_column;
     ss >> prob.num_staticObs;
     ss >> prob.num_dynamicObs;
-    for (int i = 0; i < prob.num_staticObs; i++){
-        Position p;
-        ss >> p.x;
-        ss >> p.y;
-        prob.staticObs.push_back(p);
-    }
+    ss >> prob.agentPos.x;
+    ss >> prob.agentPos.y;
     for (int i = 0; i < prob.num_dynamicObs; i++){
         Position p;
         ss >> p.x;
         ss >> p.y;
         prob.dynamicObs.push_back(p);
     }
-    ss >> prob.agentPos.x;
-    ss >> prob.agentPos.y;
+    for (int i = 0; i < prob.num_staticObs; i++){
+        Position p;
+        ss >> p.x;
+        ss >> p.y;
+        prob.staticObs.push_back(p);
+    }
     ss >> prob.goal.x;
     ss >> prob.goal.y;
     return prob;

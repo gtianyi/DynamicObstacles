@@ -36,6 +36,7 @@ private:
             numOfEpisode++;
             int action = rand() % 5;
             getStateByActionViaSocket(trainSock, to_string(action));
+            
         }
     }
 
@@ -46,9 +47,9 @@ private:
             if(s->Q[i] == *it) bestActions.push_back(i);
         }
         int a = rand() % bestActions.size();
-        s->bestAction = a;
+        s->bestAction = bestActions[a];
         s->bestQ = *it;
-        return a;
+        return bestActions[a];
     }
     
     void qlearning(){
@@ -57,9 +58,25 @@ private:
             numOfEpisode++;
             string msg = "";
             shared_ptr<State> curState = start;
+            cout << "Qvalue: "
+                 << curState->Q[0] <<  " "
+                 << curState->Q[1] <<  " "
+                 << curState->Q[2] <<  " "
+                 << curState->Q[3] <<  " "
+                 << curState->Q[4] <<  endl;
+            // cout << "bestQ: " << curState->bestQ << endl;
             double step = 1.0;
             while(msg != "lose" && msg != "win"){
                 int a = chooseAction(curState);
+                // cout << "Qvalue: "
+                 // << curState->Q[0] <<  " "
+                 // << curState->Q[1] <<  " "
+                 // << curState->Q[2] <<  " "
+                 // << curState->Q[3] <<  " "
+                 // << curState->Q[4] <<  endl;
+                // cout << "bestQ: " << curState->bestQ << endl;
+                // cout << "bestAction: " << curState->bestAction << endl;
+                // cout << "choosed action: " << a << endl;
                 msg = getStateByActionViaSocket(trainSock, to_string(a));
                 double reward = 0;
                 double nextQ = 0;
@@ -106,6 +123,9 @@ public:
         else if(parameter.alg == "qlearning"){
             qlearning();
         }
+        else if(parameter.alg == "sarsa"){
+            // sara();
+        }
         cout << "finish training ! ! !" << endl;
         return ;
     }
@@ -114,17 +134,29 @@ public:
         cout << "running now..." << endl;
         runSock = _sock;
         shared_ptr<State> curState = start;
+        int steps = 0;
         while(true){
+            // cout << "Qvalue: "
+            //      << curState->Q[0] <<  " "
+            //      << curState->Q[1] <<  " "
+            //      << curState->Q[2] <<  " "
+            //      << curState->Q[3] <<  " "
+            //      << curState->Q[4] <<  endl;
             int a = 0;
             if(curState != nullptr) a = curState->bestAction;
             else a = rand() % 5;
+            // cout << "bestQ: " << curState->bestQ << endl;
+            // cout << "bestAction: " << curState->bestAction << endl;
+            // cout << "choosed action: " << a << endl;
             string msg = getStateByActionViaSocket(runSock, to_string(a));
             if (msg == "lose" || msg == "win"){
                 cout << msg << endl;
+                cout << steps << endl;
                 break;
             }
             if(states.find(msg) != states.end()) curState = states[msg];
             else curState = nullptr;
+            steps++;
         }
     }
 };
