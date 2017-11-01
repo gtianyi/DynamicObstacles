@@ -9,9 +9,9 @@ server_address = ('localhost', 3000)
 print ( 'connecting to %s port %s' % server_address)
 
 
-messages = [b'start',b'0 2 3 4']
+messages = [b'start',b'2', b'2']
 
-for i in range(2):
+for i in range(3):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(server_address)
     try:
@@ -22,18 +22,18 @@ for i in range(2):
         sock.sendall(message)
 
         # Look for the response
-        amount_received = 0
-        amount_expected = len(message)
-
-        while amount_received < amount_expected:
-            data = sock.recv(2048)
-            amount_received += len(data)
-            print ('received "%s"' % data)
+        # amount_received = 0
+        # amount_expected = len(message)
+        #
+        # while amount_received < amount_expected:
+        data = sock.recv(2048)
+            # amount_received += len(data)
+        print ('received "%s"' % data)
     # finally:
     #     pass
-    # except:
-    #     pass
+    except:
+        pass
 
-    finally:
-# print ('closing socket')
-        sock.close()
+#     finally:
+# # print ('closing socket')
+#         sock.close()

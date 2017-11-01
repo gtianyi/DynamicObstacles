@@ -1,0 +1,247 @@
+import socket
+import random
+import time
+from collections import deque
+
+random.seed(13)
+timeframe = 0.5
+
+
+class Grid:
+    def __init__(self, row=6, col=6):
+        self.win = 0
+        self.width = row
+        self.height = col
+        self.agent = Agent(3, 1)
+        self.goal = Object(self.width - 1, self.height - 1)
+        self.staticObstacles = []
+        self.dynamicObstacles = []
+        # self.dynamicObstacles.append(DynamicObstacle(3, 2))
+        # self.dynamicObstacles.append(DynamicObstacle(4, 4))
+        self.addObstacles()
+        self.tempObstacle = None
+
+    def addObstacles(self):
+        self.staticObstacles.append(StaticObstacle(2, 3))
+        self.staticObstacles.append(StaticObstacle(5, 1))
+        self.dynamicObstacles.append(DynamicObstacle(3, 2))
+        self.dynamicObstacles.append(DynamicObstacle(4, 4))
+
+    def updateAll(self):
+        self.agent.update()
+        self.checkAgent(self.agent)
+
+        for i in self.dynamicObstacles:
+            i.update()
+            self.checkObstacle(i)
+
+        if self.win == 0:
+            if self.tempObstacle:
+                if self.tempObstacle.getLocation() == self.agent.getLastLocation():
+                    self.win = -1
+            self.tempObstacle = None
+            if not self.detectObstacles(self.agent):
+                self.win = -1
+
+    def checkAgent(self, obj):
+        if self.reachGoal(obj):
+            self.win = 1
+            return
+        if not self.isValid(obj):
+            self.win = -1
+            return
+        self.detectObstacles(obj)
+        return
+
+    def checkObstacle(self, obj):
+        if self.reachGoal(obj):
+            obj.revoke()
+            return
+        if not self.isValid(obj):
+            obj.revoke()
+            return
+        if not self.detectObstacles(obj):
+            obj.revoke()
+            return
+        return
+
+    def detectObstacles(self, obj):
+        obstacles = self.dynamicObstacles + self.staticObstacles
+        for i in obstacles:
+            if obj is i:
+                pass
+            else:
+                if i.getLocation() == obj.getLocation():
+                    if obj is self.agent:
+                        if i in self.dynamicObstacles:
+                            self.tempObstacle = i
+                        else:
+                            self.win = -1
+                        return False
+                    else:
+                        return False
+        return True
+
+    def isValid(self, obj):
+        x, y = obj.getLocation()
+        if 0 <= x <= self.width - 1 and 0 <= y <= self.height - 1:
+            return True
+        else:
+            return False
+
+    def reachGoal(self, obj):
+        if obj.getLocation() == self.goal.getLocation():
+            return True
+        else:
+            return False
+
+    def dump(self, flag='update'):
+        result = []
+        if flag == 'init':
+            result.extend([self.width, self.height])
+            result.extend([len(self.staticObstacles), len(self.dynamicObstacles)])
+        result.extend(self.agent.getLocation())
+        for i in self.dynamicObstacles:
+            result.extend(i.getLocation())
+        if flag == 'init':
+            for i in self.staticObstacles:
+                result.extend(i.getLocation())
+            result.extend(self.goal.getLocation())
+        result = ' '.join([str(x) for x in result])
+        return result
+
+    def simplePlot(self):
+        cache = {}
+        cache[tuple(self.agent.getLocation())] = 'E'
+        cache[tuple(self.goal.getLocation())] = 'G'
+        for i in self.dynamicObstacles:
+            cache[tuple(i.getLocation())] = 'Y'
+        for i in self.staticObstacles:
+            cache[tuple(i.getLocation())] = 'S'
+        pass
+        for i in range(self.height):
+            for j in range(self.width):
+                if (j, i) in cache:
+                    print(cache[(j, i)], end=" ")
+                else:
+                    print("O", end=" " )
+            print('')
+        print('')
+
+
+class Object:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+        self.locationHistory = [[self.x, self.y]]
+
+    def getLocation(self):
+        return [self.x, self.y]
+
+    def getAction(self):
+        return '0'
+
+    def move(self, action):
+        """ $ s u d r l 
+            $ 0 1 2 3 4"""
+        if action == '0':
+            pass
+        elif action == '1':
+            self.y -= 1
+        elif action == '2':
+            self.y += 1
+        elif action == '3':
+            self.x += 1
+        elif action == '4':
+            self.x -= 1
+        else:
+            self.x = -1
+            self.y = -1
+
+    def update(self):
+        self.locationHistory.append(self.getLocation())
+        self.move(self.getAction())
+
+
+class Agent(Object):
+    def __init__(self, x, y):
+        Object.__init__(self, x, y)
+        # self.actionQueue = deque(['2', '3', '0', '4', '4'])
+        # self.actionQueue = deque(['2', '2', '0', '3', '3', '3', '3'])
+        self.actionQueue = deque()
+        self.locationHistory = []
+        pass
+
+    def getAction(self):
+        if self.actionQueue:
+            return self.actionQueue.popleft()
+        else:
+            return -1
+
+    def getLastLocation(self):
+        return self.locationHistory[-1]
+
+    def fetchActions(self, data):
+        print(data)
+        self.actionQueue += data.split(' ')
+        print(self.actionQueue)
+
+
+class DynamicObstacle(Object):
+    def __init__(self, x, y):
+        Object.__init__(self, x, y)
+
+    def getAction(self):
+        return str(random.randint(0, 4))
+
+    def revoke(self):
+        self.x = self.locationHistory[-1][0]
+        self.y = self.locationHistory[-1][1]
+
+
+class StaticObstacle(Object):
+    def __init__(self, x, y):
+        Object.__init__(self, x, y)
+
+def createSocket():
+    sock, connection = 0, 0
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 2048)
+    server_address = ('localhost', 3000)
+    print ('starting up on %s port %s' % server_address)
+    sock.bind(server_address)
+    sock.listen(1)
+    connection, _ = sock.accept()
+    return connection
+
+
+if __name__ == "__main__":
+    connection = createSocket()
+    game = Grid()
+    # print(game.agent.getLocation())
+    data = connection.recv(2048).decode("utf-8")
+    if data == "start":
+        connection.sendall(game.dump('init').encode("utf-8"))
+    # print(game.dump('init'))
+    # print(game.dump())
+
+    for i in range(10):
+        random.seed(13)
+        game = Grid()
+
+        for i in range(7):
+            if not game.agent.actionQueue:
+                data = connection.recv(2048).decode("utf-8")
+                game.agent.fetchActions(data)
+            game.updateAll()
+            game.simplePlot()
+            if game.win == 1:
+                print("win")
+                connection.sendall("win".encode("utf-8"))
+                break
+            elif game.win == -1:
+                print("lose")
+                connection.sendall("lose".encode("utf-8"))
+                break
+            elif game.win == 0:
+                connection.sendall(game.dump().encode("utf-8"))
