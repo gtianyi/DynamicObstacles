@@ -174,7 +174,9 @@ class Agent(Object):
 
     def getAction(self):
         if self.actionQueue:
-            return self.actionQueue.popleft()
+            temp = self.actionQueue.popleft()
+            print(temp)
+            return temp
         else:
             return -1
 
