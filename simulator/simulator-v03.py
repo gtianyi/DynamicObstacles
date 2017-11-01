@@ -12,7 +12,7 @@ class Grid:
         self.win = 0
         self.width = row
         self.height = col
-        self.agent = Agent(3, 1)
+        self.agent = Agent(0, 0)
         self.goal = Object(self.width - 1, self.height - 1)
         self.staticObstacles = []
         self.dynamicObstacles = []
@@ -115,7 +115,7 @@ class Grid:
         cache[tuple(self.agent.getLocation())] = 'A'
         cache[tuple(self.goal.getLocation())] = 'G'
         for i in self.dynamicObstacles:
-            cache[tuple(i.getLocation())] = 'Y'
+            cache[tuple(i.getLocation())] = 'D'
         for i in self.staticObstacles:
             cache[tuple(i.getLocation())] = 'S'
         pass
@@ -124,7 +124,7 @@ class Grid:
                 if (j, i) in cache:
                     print(cache[(j, i)], end=" ")
                 else:
-                    print("O", end=" " )
+                    print(".", end=" " )
             print('')
         print('')
 
