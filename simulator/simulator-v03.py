@@ -5,7 +5,7 @@ from collections import deque
 
 random.seed(13)
 timeframe = 0.5
-
+PRINTOUT = False
 
 class Grid:
     def __init__(self, row=6, col=6):
@@ -175,7 +175,8 @@ class Agent(Object):
     def getAction(self):
         if self.actionQueue:
             temp = self.actionQueue.popleft()
-            print(temp)
+            if PRINTOUT:
+                print(temp)
             return temp
         else:
             return -1
@@ -234,13 +235,16 @@ if __name__ == "__main__":
                 data = connection.recv(2048).decode("utf-8")
                 game.agent.fetchActions(data)
             game.updateAll()
-            game.simplePlot()
+            if PRINTOUT:
+                game.simplePlot()
             if game.win == 1:
-                print("win")
+                if PRINTOUT:
+                    print("win")
                 connection.sendall("win".encode("utf-8"))
                 break
             elif game.win == -1:
-                print("lose")
+                if PRINTOUT:
+                    print("lose")
                 connection.sendall("lose".encode("utf-8"))
                 break
             elif game.win == 0:
