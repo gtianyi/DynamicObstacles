@@ -227,7 +227,7 @@ if __name__ == "__main__":
     # print(game.dump())
 
     while True:
-        random.seed(13)
+        # random.seed(13)
         game = Grid()
 
         while True:
