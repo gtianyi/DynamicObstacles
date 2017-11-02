@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     ifstream indata;
     ofstream outdata;
 
-
+	cout<<"hello world";
     if (argc<2)
     {
         cout<<"error input file is missing \n";
