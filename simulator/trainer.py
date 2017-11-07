@@ -201,11 +201,11 @@ class StaticObstacle(Object):
     def __init__(self, x, y):
         Object.__init__(self, x, y)
 
-def createSocket():
+def createSocket( port ):
     sock, connection = 0, 0
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 2048)
-    server_address = ('localhost', 3000)
+    server_address = ('localhost', port)
     print ('starting up on %s port %s' % server_address)
     sock.bind(server_address)
     sock.listen(1)
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
 
-    connection = createSocket()
+    connection = createSocket(3000)
     game = Grid()
     data = connection.recv(2048).decode("utf-8")
     if data == "start":
