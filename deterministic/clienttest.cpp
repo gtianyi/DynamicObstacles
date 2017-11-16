@@ -43,11 +43,11 @@ int main(int argc,  char const *argv[])
     valread =  read( sock,  buffer,  1024);
     printf("%s\n", buffer );
 	
-	for (int i=0 ; i<5 ; i++)
+	for (int i=0 ; i<3 ; i++)
 	{    
-    	hello="u";
+    	hello="2";
     	send(sock,  hello,  strlen(hello),  0 );
-    	printf("update from server\n" );
+    	printf("update from server with 2\n" );
     	valread =  read( sock,  buffer,  1024);
     	printf("%s\n", buffer );
     }
