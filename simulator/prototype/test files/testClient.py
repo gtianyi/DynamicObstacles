@@ -1,11 +1,11 @@
 import socket
 import sys
-
+import time
 # Create a TCP/IP socket
 
 sock = 0
 # Connect the socket to the port where the server is listening
-server_address = ('localhost', 4000)
+server_address = ('localhost', 3000)
 print ( 'connecting to %s port %s' % server_address)
 
 
@@ -27,6 +27,7 @@ for i in range(3):
         #
         # while amount_received < amount_expected:
         data = sock.recv(2048)
+        time.sleep(0.5)
             # amount_received += len(data)
         print ('received "%s"' % data)
     # finally:

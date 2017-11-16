@@ -4,6 +4,8 @@ from trainer import *
 
 if __name__ == "__main__":
     timeframe = 0.5
+    PRINTOUT = False
+    SEEDED = False
     parser = argparse.ArgumentParser(description='Start a simulator training server.')
     parser.add_argument('-s', '--seed', action='store_true', default=False, help='Import seed for random numbers')
     parser.add_argument('-p', '--plot', action='store_true', default=False, help='Turn on simple plot')

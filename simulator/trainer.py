@@ -4,6 +4,9 @@ import time
 from collections import deque
 import argparse
 
+PRINTOUT = True
+SEEDED = False
+
 class Grid:
     def __init__(self, row=6, col=6):
         self.win = 0
