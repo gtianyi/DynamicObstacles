@@ -269,6 +269,9 @@
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int path[][3],int n_of_st,int n_of_dy);
 
+
+    void setprob (int n_hist ,int history[][2] ,int size ,int prob [][3]);
+
     int main()
     {
 
@@ -288,6 +291,11 @@
         display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
 
         return 0;
+    }
+
+    void setprob (int n_hist ,int history[][2] ,int size ,int prob [][3])
+    {
+
     }
 
 
