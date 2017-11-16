@@ -5,7 +5,7 @@ import sys
 
 sock = 0
 # Connect the socket to the port where the server is listening
-server_address = ('localhost', 3000)
+server_address = ('localhost', 4000)
 print ( 'connecting to %s port %s' % server_address)
 
 
