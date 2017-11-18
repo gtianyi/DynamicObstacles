@@ -398,6 +398,7 @@
     }
     void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st)
     {
+
         for (int i = 0; i <6 ; ++i) {
             for (int j = 0; j <6; ++j) {
                 huristic[i][j]=dist(i,j,goalx,goaly)+10;
@@ -440,7 +441,7 @@
         map[startx][starty]='S';
         map[goalx][goaly]='G';
 
-        cout<<"path from the start to goal \n";
+        cout<<"Path from the start to goal \n";
 
         for (int i = 0; i <sizex; ++i) {
             for (int j = 0; j < sizey; ++j)
