@@ -43,7 +43,7 @@ int main(int argc,  char const *argv[])
     valread =  read( sock,  buffer,  1024);
     printf("%s\n", buffer );
 	
-	for (int i=0 ; i<3 ; i++)
+	for (int i=0 ; i<4 ; i++)
 	{    
     	hello="2";
     	send(sock,  hello,  strlen(hello),  0 );

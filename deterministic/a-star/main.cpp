@@ -5,11 +5,11 @@
     #include <netinet/in.h>
     #include <string.h>
     #include <arpa/inet.h>
-//    #include <unistd.h>
+    #include <unistd.h>
     #define PORT 4000
     using namespace std;
 
-    struct link
+    struct lenk
     {
         int id;
         int f;
@@ -17,16 +17,16 @@
         int h;
         int x;
         int y;
-        link* next;
-        link* prev;
-        link* parent;
+        lenk* next;
+        lenk* prev;
+        lenk* parent;
 
     };
     class linklist
     {
         private:
-            link * first;
-            link * end;
+            lenk * first;
+            lenk * end;
 
         public:
 
@@ -38,9 +38,9 @@
                 count=0;
             }
 
-            link* get (int id)
+            lenk* get (int id)
             {
-                link* current=first;
+                lenk* current=first;
                 while (current!=NULL) {
                     if (current->id == id) {
                         return current;
@@ -53,7 +53,7 @@
             void getpath(int path[][3])
             {
                 int c=0;
-                link* current=first;
+                lenk* current=first;
                 path[0][0]=c;
                 while(current !=NULL )
                 {
@@ -70,7 +70,7 @@
             void check1 (int child[][5])   //open list 3
             {
                 for (int i = 1; i <=child[0][0] ; ++i) {
-                    link* current = first;
+                    lenk* current = first;
                     while (current!=NULL)
                     {
                         if( child[i][0]==current->x  && child[i][1]==current->y &&  current->f < child[i][2] )
@@ -88,7 +88,7 @@
             void check2 (int child[][5])   //closed list 4
             {
                 for (int i = 1; i <=child[0][0] ; ++i) {
-                    link* current = first;
+                    lenk* current = first;
                     while (current!=NULL)
                     {
                         if( child[i][0]==current->x  && child[i][1]==current->y &&  current->f <child[i][2] )
@@ -103,13 +103,13 @@
 
             }
 
-            void additem(int g,int h,int x,int y,link* p)
+            void additem(int g,int h,int x,int y,lenk* p)
             {
                 count++;
 
                 if ( first == NULL && end==NULL )
                 {
-                    link* newlink = new link;
+                    lenk* newlink = new lenk;
                     newlink->id= count;
                     newlink->x = x;
                     newlink->y = y;
@@ -127,7 +127,7 @@
                     int d=g+h;
                     if (d <= first->f )
                     {
-                        link* newlink = new link;
+                        lenk* newlink = new lenk;
                         newlink->id= count;
                         newlink->g = g;
                         newlink->h = h;
@@ -144,7 +144,7 @@
                     }
                     else if ( d >= end->f )
                     {
-                        link* newlink = new link;
+                        lenk* newlink = new lenk;
                         newlink->id= count;
                         newlink->g = g;
                         newlink->h = h;
@@ -159,12 +159,12 @@
                     }
                     else
                     {
-                        link* current = first;
+                        lenk* current = first;
                         while( current != NULL )
                         {
                             if( d<current->f || (d==current->f && g<=current->g))
                             {
-                                link* newlink = new link;
+                                lenk* newlink = new lenk;
                                 newlink->id= count;
                                 newlink->g = g;
                                 newlink->h = h;
@@ -181,7 +181,7 @@
                             if( d==current->f && g>current->g)
                             {
                                 current=current->next;
-                                link* newlink = new link;
+                                lenk* newlink = new lenk;
                                 newlink->id= count;
                                 newlink->g = g;
                                 newlink->parent=p;
@@ -205,7 +205,7 @@
             }
             void display()
             {
-                link* current = first;
+                lenk* current = first;
                 while( current != NULL )
                 {
                     cout << current->id<<"\t"<< current->f<<"\t" <<current->x <<"\t"<<current->y <<endl;
@@ -215,7 +215,7 @@
 
             void arrange()
             {
-                link* current = first;
+                lenk* current = first;
                 for(int i=0 ; i<count ; i++)
                 {
                     current->id=i+1;
@@ -241,7 +241,7 @@
                 }
                 else
                 {
-                    link* current = first;
+                    lenk* current = first;
                     while( current != NULL )
                     {
                         if(i==current->id)
@@ -315,7 +315,7 @@
         while (openlist.count>0 && !solved)
         {
             openlist.arrange();
-            link* node=openlist.get(1);
+            lenk* node=openlist.get(1);
             openlist.remove(1);
             genrate(node->x,node->y,child);
 
