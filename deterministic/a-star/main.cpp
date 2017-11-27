@@ -513,23 +513,46 @@
     }
     void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st)
     {
+        int hist[1][2]={{2,2}};
+        double prob[36][3];
+
+        for (int l = 0; l <36; ++l)
+            for (int i = 0; i <3; ++i)
+                prob[l][i]=0;
 
         for (int i = 0; i <6 ; ++i) {
             for (int j = 0; j <6; ++j) {
                 huristic[i][j]=dist(i,j,goalx,goaly)+10;
             }
         }
+
+
+        getProb(3,hist,6,6,prob);
+
+
+
+        for (int l = 0; l <36; ++l) {
+            for (int i = 0; i <3; ++i) {
+                cout<<prob[l][i]<<"\t";
+            }
+            cout<<endl;
+        }
+
+
+
         huristic[goalx][goaly]=0;
+
+
         for (int k = 0; k <n_of_st; ++k) {
             huristic[staticop[k][0]][staticop[k][1]]=1000;
         }
 
-        /*for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 6; ++i) {
             for (int j = 0; j < 6 ; ++j) {
                 cout<<huristic[i][j]<<"\t";
              }
             cout<<endl;
-        }*/
+        }
 
     }
 
