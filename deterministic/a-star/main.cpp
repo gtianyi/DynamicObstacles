@@ -309,6 +309,7 @@
         valread =  read( sock,  buffer,  1024);
         printf("%s\n", buffer );
 
+
         sizex=buffer[count+=2]-48;
         sizey=buffer[count+=2]-48;
         n_of_st=buffer[count+=2]-48;
@@ -342,12 +343,12 @@
             c=0;
             count=-2;
             path[0][0]=0;
-            cout<<startx<<"\t"<<starty<<endl;
+            //cout<<startx<<"\t"<<starty<<endl;
 
             a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy);
             char path_letter[path[0][0]];
             path_convereter(path, path_letter);
-            display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
+            //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
 
             for (int i = 0; i < strlen(path_letter) - 1; i++) {
                 msg[c++] = path_letter[i];
@@ -355,9 +356,10 @@
             }
 
             send(sock, msg,1, 0);
-            printf("sending path \n");
+            printf("sending action  \n");
+            memset(buffer,0,sizeof(buffer));
             read(sock, buffer, 1024);
-            printf("%s\n", buffer);
+            printf("Update Message ==>> %s\n", buffer);
 
 
 
@@ -383,7 +385,8 @@
             {
                 msg[0]='0';
                 send(sock, msg,1, 0);
-                printf("sending path \n");
+                printf("Final state ====>  ");
+                memset(buffer,0,sizeof(buffer));
                 read(sock, buffer, 1024);
                 printf("%s\n", buffer);
                 break;
@@ -660,7 +663,7 @@
 
         for (int i = 0; i <6 ; ++i) {
             for (int j = 0; j <6; ++j) {
-                huristic[i][j]=dist(i,j,goalx,goaly)+10;
+                huristic[i][j]=dist(i,j,goalx,goaly);
             }
         }
 
@@ -668,15 +671,16 @@
         getProb(3,hist,6,6,prob);
 
 
+        cout<<"======================================================"<<endl;
 
-        /*for (int l = 0; l <36; ++l) {
+        for (int l = 0; l <36; ++l) {
             for (int i = 0; i <3; ++i) {
                 cout<<prob[l][i]<<"\t";
             }
             cout<<endl;
-        }*/
+        }
 
-
+        cout<<"======================================================"<<endl;
 
         huristic[goalx][goaly]=0;
 
@@ -686,7 +690,12 @@
         }
 
         for (int k = 0; k <n_of_dy; ++k) {
-            huristic[dynamicop[k][0]][dynamicop[k][1]]=1000;
+            huristic[dynamicop[k][0]][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]+1][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]-1][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]][dynamicop[k][1]+1]+=2;
+            huristic[dynamicop[k][0]][dynamicop[k][1]-1]+=2;
+
         }
 
         /*for (int i = 0; i < 6; ++i) {
