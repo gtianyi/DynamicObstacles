@@ -1,3 +1,8 @@
+#include<iostream>
+#include <vector>
+#include <string>
+
+using namespace std ;
 /**
     * Every move has a 20% chance at each step
     * @param n_hist - Size of history
@@ -71,51 +76,73 @@ void getProb (int n_hist, int history[][2], int rows, int cols, double prob [][3
         }
     }
 
+    int lastCount = 5;
+
     for(int step = 1; step < 3; step++) {
         // Loop through all grid spaces and inc counters
-        int countTotal = 0;
+        int countTotal = lastCount;
         for(int row = 0; row < rows; row ++) {
             for(int col = 0; col < cols; col ++) {
                 if(grid[row][col] > 0) {
-                    leftCol = currCol - 1;
-                    rightCol = currCol + 1;
-                    upRow = currRow + 1;
-                    downRow = currRow - 1;
+                    leftCol = col - 1;
+                    rightCol = col + 1;
+                    upRow = row + 1;
+                    downRow = row - 1;
 
                     if (horizontalWallCollision(rows, upRow)) {
-                        grid[currRow][currCol]++;
+                        grid[row][col]++;
+                        countTotal++;
                     } else {
-                        grid[upRow][currCol]++;
+                        grid[upRow][col]++;
+                        countTotal++;
                     }
                     if (horizontalWallCollision(rows, downRow)) {
-                        grid[currRow][currCol]++;
+                        grid[row][col]++;
+                        countTotal++;
                     } else {
-                        grid[downRow][currCol]++;
+                        grid[downRow][col]++;
+                        countTotal++;
                     }
                     if (verticalWallCollision(cols, leftCol)) {
-                        grid[currRow][currCol]++;
+                        grid[row][col]++;
+                        countTotal++;
                     } else {
-                        grid[currRow][leftCol]++;
+                        grid[row][leftCol]++;
+                        countTotal++;
                     }
                     if (verticalWallCollision(cols, rightCol)) {
-                        grid[currRow][currCol]++;
+                        grid[row][col]++;
+                        countTotal++;
                     } else {
-                        grid[currRow][rightCol]++;
+                        grid[row][rightCol]++;
+                        countTotal++;
                     }
-
-                    countTotal++;
                 }
             }
         }
 
+        lastCount = countTotal;
+
+        double sum = 0;
         for(int row = 0; row < rows; row ++) {
             for (int col = 0; col < cols; col++) {
                 if(grid[row][col] > 0) {
                     prob[coordsToNum(cols, row, col)][0] = grid[row][col] / (double)countTotal;
+                    cout << row << " " << col << " " << grid[row][col] / (double)countTotal;
+                    sum += grid[row][col] / (double)countTotal;
+                    cout << "\n";
                 }
             }
         }
+        cout << "sum: " << sum;
+
+        cout << "\n";
     }
 }
 
+std::vector<pair<double, string>> getTransProb (string state)
+{
+    vector<pair<double, string>> result;
 
+    return result;
+}
