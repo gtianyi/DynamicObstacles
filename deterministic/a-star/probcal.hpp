@@ -1,16 +1,10 @@
 #include<iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 
 using namespace std ;
-/**
-    * Every move has a 20% chance at each step
-    * @param n_hist - Size of history
-    * @param history - X and Y values of past moves
-    * @param rows - Number of rows
-    * @param cols - Number of columns
-    * @param prob - Pass by ref matrix of dynamic obstacle probability (size)x3
-    */
+
 
 bool horizontalWallCollision(int cols, int col)
 {
@@ -27,12 +21,16 @@ int coordsToNum(int cols, int row, int col)
     return row * cols + col;
 }
 
-
+/**
+  * Every move has a 20% chance at each step
+  * @param n_hist - Size of history
+  * @param history - X and Y values of past moves
+  * @param rows - Number of rows
+  * @param cols - Number of columns
+  * @param prob - Pass by ref matrix of dynamic obstacle probability (size)x3
+  */
 void getProb (int n_hist, int history[][2], int rows, int cols, double prob [][3])
 {
-    int gridSize = rows * cols;
-    int probCount [3];
-
     // Without using the history...
     int currCol = history[0][0];
     int currRow = history[0][1];
@@ -128,21 +126,58 @@ void getProb (int n_hist, int history[][2], int rows, int cols, double prob [][3
             for (int col = 0; col < cols; col++) {
                 if(grid[row][col] > 0) {
                     prob[coordsToNum(cols, row, col)][0] = grid[row][col] / (double)countTotal;
-                    cout << row << " " << col << " " << grid[row][col] / (double)countTotal;
                     sum += grid[row][col] / (double)countTotal;
-                    cout << "\n";
                 }
             }
         }
-        cout << "sum: " << sum;
-
-        cout << "\n";
     }
 }
 
-std::vector<pair<double, string>> getTransProb (string state)
+/**
+ * Get the transition probability
+ * @param state - string representation of the state
+ * @param rows - Number of rows in the grid world
+ * @param cols - Number of columns in the grid world
+ * @return vector of transition probabilities
+ */
+std::vector<pair<double, string>> getTransProb (string state, int rows, int cols)
 {
+    const int girdSize = rows*cols;
+
     vector<pair<double, string>> result;
+    pair<int, int> coord;
+    std::stringstream ss(state);
+
+    vector<double[36][3]> probs;
+
+    int i;
+    int count = 0;
+    while (ss >> i)
+    {
+        count++;
+
+        if(count == 1)
+            coord.first = i;
+        else
+            coord.second = i;
+
+        if (ss.peek() == ',')
+            ss.ignore();
+
+        // New coord
+        if (count >= 2) {
+            count = 0;
+
+            int hist[1][2]={{coord.first, coord.second}};
+
+            // TODO Hard coded! This is not good
+            double prob[36][3];
+            getProb(3, hist, rows, cols, prob);
+
+        }
+    }
+
+    //TODO Use probs to calc trans prob
 
     return result;
 }
