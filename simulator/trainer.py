@@ -20,7 +20,7 @@ class Grid:
         self.tempObstacle = None
 
     def generateLocation(self):
-        return (random.randint(0,self.width),random.randint(0,self.height))
+        return (random.randint(0,self.width-1),random.randint(0,self.height-1))
 
     def addObstacles(self, sta=2, dyn=2):
         if sta == 2 and dyn == 2:
@@ -36,6 +36,7 @@ class Grid:
                     temp = self.generateLocation()
                 self.staticObstacles.append(StaticObstacle(temp[0],temp[1]))
                 cache.add(temp)
+                print(temp)
             while len(self.dynamicObstacles) < dyn:
                 temp = self.generateLocation()
                 while temp in cache:
@@ -182,7 +183,6 @@ class Object:
 class Agent(Object):
     def __init__(self, x, y):
         Object.__init__(self, x, y)
-        # self.actionQueue = deque(['2', '3', '0', '4', '4'])
         # self.actionQueue = deque(['2', '2', '0', '3', '3', '3', '3'])
         self.actionQueue = deque()
         self.locationHistory = []
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
-
+    # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
     game = Grid()
     if PRINTOUT:
         game.simplePlot()

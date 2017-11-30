@@ -8,15 +8,18 @@ if __name__ == "__main__":
     SEEDED = False
     parser = argparse.ArgumentParser(description='Start a simulator training server.')
     parser.add_argument('-s', '--seed', action='store_true', default=False, help='Import seed for random numbers')
-    parser.add_argument('-p', '--plot', action='store_true', default=False, help='Turn on simple plot')
+    parser.add_argument('-p', '--plot', action='store_true', default=True, help='Turn on simple plot')
     args = parser.parse_args()
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
 
-    connection = createSocket(4000)
     if SEEDED:
         random.seed(13)
-    game = Grid()
+    #set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
+    game = Grid(10,10,5,3)
+    if PRINTOUT:
+        game.simplePlot()
+    connection = createSocket(4000)
     data = connection.recv(2048).decode("utf-8")
     if data == "start":
         connection.sendall(game.dump('init').encode("utf-8"))
