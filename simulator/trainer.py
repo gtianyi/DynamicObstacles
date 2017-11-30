@@ -243,6 +243,7 @@ if __name__ == "__main__":
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
 
+    connection = createSocket(3000)
     while True:
         if SEEDED:
             random.seed(13)
@@ -250,7 +251,7 @@ if __name__ == "__main__":
         game = Grid(10,10,5,5)
         if PRINTOUT:
             game.simplePlot()
-        connection = createSocket(3000)
+
         data = connection.recv(2048).decode("utf-8")
         if data == "start":
             connection.sendall(game.dump('init').encode("utf-8"))
