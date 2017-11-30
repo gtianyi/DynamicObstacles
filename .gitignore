@@ -1,0 +1,5 @@
+*/.idea/*
+*/cmake-build-debug/*
+*/CMakeLists.txt
+*.pyc
+simulator/__pycache__/trainer.cpython-36.pyc

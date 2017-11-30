@@ -5,11 +5,16 @@
     #include <netinet/in.h>
     #include <string.h>
     #include <arpa/inet.h>
-//    #include <unistd.h>
+    #include <unistd.h>
+
+    #include"probcal.hpp"
     #define PORT 4000
     using namespace std;
 
-    struct link
+    struct sockaddr_in address;
+    struct sockaddr_in serv_addr;
+
+    struct lenk
     {
         int id;
         int f;
@@ -17,16 +22,16 @@
         int h;
         int x;
         int y;
-        link* next;
-        link* prev;
-        link* parent;
+        lenk* next;
+        lenk* prev;
+        lenk* parent;
 
     };
     class linklist
     {
         private:
-            link * first;
-            link * end;
+            lenk * first;
+            lenk * end;
 
         public:
 
@@ -38,9 +43,9 @@
                 count=0;
             }
 
-            link* get (int id)
+            lenk* get (int id)
             {
-                link* current=first;
+                lenk* current=first;
                 while (current!=NULL) {
                     if (current->id == id) {
                         return current;
@@ -53,7 +58,7 @@
             void getpath(int path[][3])
             {
                 int c=0;
-                link* current=first;
+                lenk* current=first;
                 path[0][0]=c;
                 while(current !=NULL )
                 {
@@ -70,7 +75,7 @@
             void check1 (int child[][5])   //open list 3
             {
                 for (int i = 1; i <=child[0][0] ; ++i) {
-                    link* current = first;
+                    lenk* current = first;
                     while (current!=NULL)
                     {
                         if( child[i][0]==current->x  && child[i][1]==current->y &&  current->f < child[i][2] )
@@ -88,7 +93,7 @@
             void check2 (int child[][5])   //closed list 4
             {
                 for (int i = 1; i <=child[0][0] ; ++i) {
-                    link* current = first;
+                    lenk* current = first;
                     while (current!=NULL)
                     {
                         if( child[i][0]==current->x  && child[i][1]==current->y &&  current->f <child[i][2] )
@@ -103,19 +108,19 @@
 
             }
 
-            void additem(int g,int h,int x,int y,link* p)
+            void additem(int g,int h,int x,int y,lenk* p)
             {
                 count++;
 
                 if ( first == NULL && end==NULL )
                 {
-                    link* newlink = new link;
+                    lenk* newlink = new lenk;
                     newlink->id= count;
                     newlink->x = x;
                     newlink->y = y;
                     newlink->g = g;
                     newlink->h = h;
-                    newlink->parent=NULL;
+                    newlink->parent=p;
                     newlink->f=g+h;
                     newlink->next = NULL;
                     newlink->prev=NULL;
@@ -127,7 +132,7 @@
                     int d=g+h;
                     if (d <= first->f )
                     {
-                        link* newlink = new link;
+                        lenk* newlink = new lenk;
                         newlink->id= count;
                         newlink->g = g;
                         newlink->h = h;
@@ -144,7 +149,7 @@
                     }
                     else if ( d >= end->f )
                     {
-                        link* newlink = new link;
+                        lenk* newlink = new lenk;
                         newlink->id= count;
                         newlink->g = g;
                         newlink->h = h;
@@ -159,12 +164,12 @@
                     }
                     else
                     {
-                        link* current = first;
+                        lenk* current = first;
                         while( current != NULL )
                         {
                             if( d<current->f || (d==current->f && g<=current->g))
                             {
-                                link* newlink = new link;
+                                lenk* newlink = new lenk;
                                 newlink->id= count;
                                 newlink->g = g;
                                 newlink->h = h;
@@ -181,7 +186,7 @@
                             if( d==current->f && g>current->g)
                             {
                                 current=current->next;
-                                link* newlink = new link;
+                                lenk* newlink = new lenk;
                                 newlink->id= count;
                                 newlink->g = g;
                                 newlink->parent=p;
@@ -205,7 +210,7 @@
             }
             void display()
             {
-                link* current = first;
+                lenk* current = first;
                 while( current != NULL )
                 {
                     cout << current->id<<"\t"<< current->f<<"\t" <<current->x <<"\t"<<current->y <<endl;
@@ -215,7 +220,7 @@
 
             void arrange()
             {
-                link* current = first;
+                lenk* current = first;
                 for(int i=0 ; i<count ; i++)
                 {
                     current->id=i+1;
@@ -241,7 +246,7 @@
                 }
                 else
                 {
-                    link* current = first;
+                    lenk* current = first;
                     while( current != NULL )
                     {
                         if(i==current->id)
@@ -262,12 +267,19 @@
 
     void display(int path[][3],char path_letter[],int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int n_of_st,int n_of_dy);
-    void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st);
+
+    void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st, int dynamicop[][2],int n_of_dy);
+
     int dist(int sx,int sy,int gx , int gy);
     void genrate (int px, int py ,int child[][5]);
     void path_convereter(int path[][3],char tmp[]);
+
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int path[][3],int n_of_st,int n_of_dy);
+
+
+
+    void initialize_connection (int & sock);
 
     int main()
     {
@@ -279,17 +291,149 @@
         int n_of_dy=2;
         int staticop[2][2]={{0,5},{1,5}};
         int dynamicop[2][2]={{0,5},{1,5}};
+        int count=-2,c=0;
 
         int path[50][3];
 
-        a_star(startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,path,n_of_st,n_of_dy);
-        char path_letter[path[0][0]];
-        path_convereter(path,path_letter);
-        display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
+
+        int sock = 0,  valread;
+        char msg[1024] = "start";
+        char buffer[1024] = {0};
+
+
+        initialize_connection (sock);
+
+        send(sock,  msg,  strlen(msg),  0 );
+        printf("hello from server\n" );
+        valread =  read( sock,  buffer,  1024);
+        printf("%s\n", buffer );
+
+
+        sizex=buffer[count+=2]-48;
+        sizey=buffer[count+=2]-48;
+        n_of_st=buffer[count+=2]-48;
+        n_of_dy=buffer[count+=2]-48;
+        starty=buffer[count+=2]-48;
+        startx=buffer[count+=2]-48;
+
+
+        for (int j =0 ; j <n_of_dy; ++j)
+        {
+            dynamicop[j][1]=buffer[count+=2]-48;
+            dynamicop[j][0]=buffer[count+=2]-48;
+        }
+
+
+
+        for (int j =0 ; j <n_of_st; ++j)
+        {
+            staticop[j][1]=buffer[count+=2]-48;
+            staticop[j][0]=buffer[count+=2]-48;
+        }
+
+
+
+
+        goaly=buffer[count+=2]-48;
+        goalx=buffer[count+=2]-48;
+
+
+        while (true) {
+            c=0;
+            count=-2;
+            path[0][0]=0;
+            //cout<<startx<<"\t"<<starty<<endl;
+
+            a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy);
+            char path_letter[path[0][0]];
+            path_convereter(path, path_letter);
+            //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
+
+            for (int i = 0; i < strlen(path_letter) - 1; i++) {
+                msg[c++] = path_letter[i];
+                msg[c++] = ' ';
+            }
+
+            send(sock, msg,1, 0);
+            printf("sending action  \n");
+            memset(buffer,0,sizeof(buffer));
+            read(sock, buffer, 1024);
+            printf("Update Message ==>> %s\n", buffer);
+
+
+
+            starty=buffer[count+=2]-48;
+            startx=buffer[count+=2]-48;
+
+            switch (msg[0]) {
+                case '1' :
+                    startx--;
+                    break;
+                case '2':
+                    startx++;
+                    break;
+                case '3':
+                    starty++;
+                    break;
+                case '4':
+                    starty--;
+                    break;
+            }
+
+            if (startx==goalx && starty==goaly)
+            {
+                msg[0]='0';
+                send(sock, msg,1, 0);
+                printf("Final state ====>  ");
+                memset(buffer,0,sizeof(buffer));
+                read(sock, buffer, 1024);
+                printf("%s\n", buffer);
+                break;
+            }
+
+            for (int j =0 ; j <n_of_dy; ++j)
+            {
+                dynamicop[j][1]=buffer[count+=2]-48;
+                dynamicop[j][0]=buffer[count+=2]-48;
+            }
+
+        }
+
+
+
+
+        //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
 
         return 0;
     }
+    void initialize_connection (int & sock)
+    {
 
+
+        if ((sock =  socket(AF_INET, SOCK_STREAM,  0)) <  0)
+        {
+            printf("\n Socket creation error \n");
+            exit(0);
+        }
+
+        memset( & serv_addr, '0',  sizeof(serv_addr));
+
+        serv_addr.sin_family =  AF_INET;
+        serv_addr.sin_port =  htons(PORT);
+
+        //  Convert IPv4 and IPv6 addresses from text to binary form
+        if(inet_pton(AF_INET,  "127.0.0.1",& serv_addr.sin_addr) <= 0)
+        {
+            printf("\nInvalid address / Address not supported \n");
+            exit(0);
+        }
+
+        if (connect(sock,  (struct sockaddr *) & serv_addr,  sizeof(serv_addr)) <  0)
+        {
+            printf("\nConnection Failed \n");
+            exit(0);
+        }
+    }
 
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int path[][3],int n_of_st,int n_of_dy)
@@ -301,13 +445,13 @@
         int huristic [x][y];
 
 
-        sethuristic(huristic,goalx,goaly,staticop,n_of_st);
+        sethuristic(huristic,goalx,goaly,staticop,n_of_st,dynamicop,n_of_dy);
 
         openlist.additem(0,huristic[startx][starty],startx,starty,NULL);
         while (openlist.count>0 && !solved)
         {
             openlist.arrange();
-            link* node=openlist.get(1);
+            lenk* node=openlist.get(1);
             openlist.remove(1);
             genrate(node->x,node->y,child);
 
@@ -316,7 +460,7 @@
 
                 if(child[i][0]==goalx && child[i][1]==goaly)
                 {
-                    cout<<"Goal reached \n";
+                    //cout<<"Goal reached \n";
                     solved=1;
                     break;
                 }
@@ -347,13 +491,13 @@
         {
             count++;
             if(path[i][0]==path[i-1][0] && path[i-1][1]-path[i][1]>0)
-                tmp[count]='r';
+                tmp[count]='3';
             if(path[i][0]==path[i-1][0] && path[i-1][1]-path[i][1]<0)
-                tmp[count]='l';
+                tmp[count]='4';
             if(path[i][1]==path[i-1][1] && path[i-1][0]-path[i][0]>0)
-                tmp[count]='d';
+                tmp[count]='2';
             if(path[i][1]==path[i-1][1] && path[i-1][0]-path[i][0]<0)
-                tmp[count]='u';
+                tmp[count]='1';
         }
         tmp[count]='G';
     }
@@ -388,16 +532,50 @@
             child[id][1] = py-1;
         }
     }
-    void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st)
+    void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st,int dynamicop[][2],int n_of_dy)
     {
+        int hist[1][2]={{2,2}};
+        double prob[36][3];
+
+        for (int l = 0; l <36; ++l)
+            for (int i = 0; i <3; ++i)
+                prob[l][i]=0;
+
         for (int i = 0; i <6 ; ++i) {
             for (int j = 0; j <6; ++j) {
-                huristic[i][j]=dist(i,j,goalx,goaly)+10;
+                huristic[i][j]=dist(i,j,goalx,goaly);
             }
         }
+
+
+        getProb(3,hist,6,6,prob);
+
+
+        cout<<"======================================================"<<endl;
+
+        for (int l = 0; l <36; ++l) {
+            for (int i = 0; i <3; ++i) {
+                cout<<prob[l][i]<<"\t";
+            }
+            cout<<endl;
+        }
+
+        cout<<"======================================================"<<endl;
+
         huristic[goalx][goaly]=0;
+
+
         for (int k = 0; k <n_of_st; ++k) {
             huristic[staticop[k][0]][staticop[k][1]]=1000;
+        }
+
+        for (int k = 0; k <n_of_dy; ++k) {
+            huristic[dynamicop[k][0]][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]+1][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]-1][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]][dynamicop[k][1]+1]+=2;
+            huristic[dynamicop[k][0]][dynamicop[k][1]-1]+=2;
+
         }
 
         /*for (int i = 0; i < 6; ++i) {
@@ -429,16 +607,19 @@
         for (int i =0; i <n_of_st ; ++i)
             map[staticop[i][0]][staticop[i][1]]='#';
 
+        for (int i =0; i <n_of_dy ; ++i)
+            map[dynamicop[i][0]][dynamicop[i][1]]='#';
+
         map[startx][starty]='S';
         map[goalx][goaly]='G';
 
-        cout<<"path from the start to goal \n";
+        cout<<"Path from the start to goal \n";
 
-        for (int i = 0; i <sizex; ++i) {
+       /* for (int i = 0; i <sizex; ++i) {
             for (int j = 0; j < sizey; ++j)
                 cout << map[i][j] << "\t";
             cout << endl;
-        }
+        }*/
 
 
         cout<<"Full path in letters ---->";
@@ -461,6 +642,9 @@
         }
         for (int i =0; i <n_of_st ; ++i)
             map[staticop[i][0]][staticop[i][1]]='#';
+
+        for (int i =0; i <n_of_dy ; ++i)
+            map[dynamicop[i][0]][dynamicop[i][1]]='#';
 
 
 
