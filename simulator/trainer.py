@@ -8,7 +8,7 @@ PRINTOUT = True
 SEEDED = False
 
 class Grid:
-    def __init__(self, row=6, col=6):
+    def __init__(self, row=6, col=6, sta = 2, dyn = 2):
         self.win = 0
         self.width = row
         self.height = col
@@ -16,16 +16,33 @@ class Grid:
         self.goal = Object(self.width - 1, self.height - 1)
         self.staticObstacles = []
         self.dynamicObstacles = []
-        # self.dynamicObstacles.append(DynamicObstacle(3, 2))
-        # self.dynamicObstacles.append(DynamicObstacle(4, 4))
-        self.addObstacles()
+        self.addObstacles(sta,dyn)
         self.tempObstacle = None
 
-    def addObstacles(self):
-        self.staticObstacles.append(StaticObstacle(2, 3))
-        self.staticObstacles.append(StaticObstacle(5, 1))
-        self.dynamicObstacles.append(DynamicObstacle(3, 2))
-        self.dynamicObstacles.append(DynamicObstacle(4, 4))
+    def generateLocation(self):
+        return (random.randint(0,self.width-1),random.randint(0,self.height-1))
+
+    def addObstacles(self, sta=2, dyn=2):
+        if sta == 2 and dyn == 2:
+            self.staticObstacles.append(StaticObstacle(2, 3))
+            self.staticObstacles.append(StaticObstacle(5, 1))
+            self.dynamicObstacles.append(DynamicObstacle(3, 2))
+            self.dynamicObstacles.append(DynamicObstacle(4, 4))
+        else:
+            cache = set([tuple(self.agent.getLocation()), tuple(self.goal.getLocation())])
+            while len(self.staticObstacles) < sta:
+                temp = self.generateLocation()
+                while temp in cache:
+                    temp = self.generateLocation()
+                self.staticObstacles.append(StaticObstacle(temp[0],temp[1]))
+                cache.add(temp)
+                print(temp)
+            while len(self.dynamicObstacles) < dyn:
+                temp = self.generateLocation()
+                while temp in cache:
+                    temp = self.generateLocation()
+                self.dynamicObstacles.append(DynamicObstacle(temp[0], temp[1]))
+                cache.add(temp)
 
     def updateAll(self):
         self.agent.update()
@@ -166,7 +183,6 @@ class Object:
 class Agent(Object):
     def __init__(self, x, y):
         Object.__init__(self, x, y)
-        # self.actionQueue = deque(['2', '3', '0', '4', '4'])
         # self.actionQueue = deque(['2', '2', '0', '3', '3', '3', '3'])
         self.actionQueue = deque()
         self.locationHistory = []
@@ -217,7 +233,6 @@ def createSocket( port ):
 
 
 if __name__ == "__main__":
-    random.seed(13)
     timeframe = 0.5
     PRINTOUT = False
     SEEDED = False
@@ -228,9 +243,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
-
-    connection = createSocket(3000)
+    # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
     game = Grid()
+    if PRINTOUT:
+        game.simplePlot()
+    connection = createSocket(3000)
     data = connection.recv(2048).decode("utf-8")
     if data == "start":
         connection.sendall(game.dump('init').encode("utf-8"))
