@@ -3,6 +3,7 @@ import random
 import time
 from collections import deque
 import argparse
+from copy import deepcopy
 
 PRINTOUT = True
 SEEDED = False
@@ -244,17 +245,32 @@ if __name__ == "__main__":
     SEEDED = vars(args)['seed']
 
     connection = createSocket(3000)
-    while True:
-        if SEEDED:
-            random.seed(13)
-        # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
-        game = Grid(10,10,5,5)
-        if PRINTOUT:
-            game.simplePlot()
 
-        data = connection.recv(2048).decode("utf-8")
-        if data == "start":
-            connection.sendall(game.dump('init').encode("utf-8"))
+    if SEEDED:
+        random.seed(13)
+    # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
+    game = Grid(10, 10, 5, 5)
+    storage = deepcopy(game)
+    if PRINTOUT:
+        game.simplePlot()
+
+    data = connection.recv(2048).decode("utf-8")
+    if data == "start":
+        connection.sendall(game.dump('init').encode("utf-8"))
+
+
+    while True:
+        # if SEEDED:
+        #     random.seed(13)
+        # # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
+        # game = Grid(10,10,5,5)
+        # if PRINTOUT:
+        #     game.simplePlot()
+        #
+        # data = connection.recv(2048).decode("utf-8")
+        # if data == "start":
+        #     connection.sendall(game.dump('init').encode("utf-8"))
+        game = deepcopy(storage)
 
         while True:
             if not game.agent.actionQueue:
