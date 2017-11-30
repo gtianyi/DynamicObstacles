@@ -36,7 +36,6 @@ class Grid:
                     temp = self.generateLocation()
                 self.staticObstacles.append(StaticObstacle(temp[0],temp[1]))
                 cache.add(temp)
-                print(temp)
             while len(self.dynamicObstacles) < dyn:
                 temp = self.generateLocation()
                 while temp in cache:
@@ -244,18 +243,18 @@ if __name__ == "__main__":
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
     # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
-    game = Grid()
-    if PRINTOUT:
-        game.simplePlot()
-    connection = createSocket(3000)
-    data = connection.recv(2048).decode("utf-8")
-    if data == "start":
-        connection.sendall(game.dump('init').encode("utf-8"))
+
 
     while True:
         if SEEDED:
             random.seed(13)
         game = Grid()
+        if PRINTOUT:
+            game.simplePlot()
+        connection = createSocket(3000)
+        data = connection.recv(2048).decode("utf-8")
+        if data == "start":
+            connection.sendall(game.dump('init').encode("utf-8"))
 
         while True:
             if not game.agent.actionQueue:
