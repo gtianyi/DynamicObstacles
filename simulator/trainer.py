@@ -247,7 +247,7 @@ if __name__ == "__main__":
         if SEEDED:
             random.seed(13)
         # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
-        game = Grid()
+        game = Grid(10,10,5,5)
         if PRINTOUT:
             game.simplePlot()
         connection = createSocket(3000)
