@@ -547,8 +547,8 @@
             }
         }
 
-
-        getProb(3,hist,6,6,prob);
+        int step=1;
+        getProb(3,hist,6,6,prob,step);
 
 
         cout<<"======================================================"<<endl;
