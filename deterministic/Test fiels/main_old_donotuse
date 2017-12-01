@@ -268,10 +268,10 @@
     void display(int path[][3],char path_letter[],int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int n_of_st,int n_of_dy);
 
-    void sethuristic (int** huristic,int goalx, int goaly,int staticop[][2],int n_of_st, int dynamicop[][2],int n_of_dy,int sizex, int sizey);
+    void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st, int dynamicop[][2],int n_of_dy);
 
     int dist(int sx,int sy,int gx , int gy);
-    void genrate (int px, int py ,int child[][5],int sizex,int sizey);
+    void genrate (int px, int py ,int child[][5]);
     void path_convereter(int path[][3],char tmp[]);
 
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
@@ -284,17 +284,19 @@
     int main()
     {
 
-        int startx , starty , goalx , goaly;
-        int sizex;
-        int sizey;
-        int n_of_st;
-        int n_of_dy;
-        int count=0,c=0;
+        int startx=0 , starty=0 , goalx=5 , goaly=5;
+        int sizex=6;
+        int sizey=6;
+        int n_of_st=2;
+        int n_of_dy=2;
+        int staticop[2][2]={{0,5},{1,5}};
+        int dynamicop[2][2]={{0,5},{1,5}};
+        int count=-2,c=0;
 
-        int path[100][3];
+        int path[50][3];
 
 
-        int sock = 0;
+        int sock = 0,  valread;
         char msg[1024] = "start";
         char buffer[1024] = {0};
 
@@ -302,60 +304,45 @@
         initialize_connection (sock);
 
         send(sock,  msg,  strlen(msg),  0 );
-        printf("hello let's start playing \n" );
-        read( sock,  buffer,  1024);
+        printf("hello from server\n" );
+        valread =  read( sock,  buffer,  1024);
         printf("%s\n", buffer );
 
-        cout<<"======================================================"<<endl;
 
-        stringstream stream(buffer);
+        sizex=buffer[count+=2]-48;
+        sizey=buffer[count+=2]-48;
+        n_of_st=buffer[count+=2]-48;
+        n_of_dy=buffer[count+=2]-48;
+        starty=buffer[count+=2]-48;
+        startx=buffer[count+=2]-48;
 
-        int n;
-        stream>>n;
-        sizex=n;
-        stream>>n;
-        sizey=n;
-        stream>>n;
-        n_of_st=n;
-        stream>>n;
-        n_of_dy=n;
-        stream>>n;
-        starty=n;
-        stream>>n;
-        startx=n;
-
-
-        int staticop[n_of_st][2];
-        int dynamicop[n_of_dy][2];
 
         for (int j =0 ; j <n_of_dy; ++j)
         {
-            stream>>n;
-            dynamicop[j][1]=n;
-            stream>>n;
-            dynamicop[j][0]=n;
+            dynamicop[j][1]=buffer[count+=2]-48;
+            dynamicop[j][0]=buffer[count+=2]-48;
         }
+
+
+
         for (int j =0 ; j <n_of_st; ++j)
         {
-            stream>>n;
-            staticop[j][1]=n;
-            stream>>n;
-            staticop[j][0]=n;
+            staticop[j][1]=buffer[count+=2]-48;
+            staticop[j][0]=buffer[count+=2]-48;
         }
-        stream>>n;
-        goaly=n;
-        stream>>n;
-        goalx=n;
 
 
 
 
-        while (true)
-        {
-            count++;
+        goaly=buffer[count+=2]-48;
+        goalx=buffer[count+=2]-48;
+
+
+        while (true) {
             c=0;
+            count=-2;
             path[0][0]=0;
-            cout<<"start position==> "<<startx<<"\t"<<starty<<endl;
+            //cout<<startx<<"\t"<<starty<<endl;
 
             a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy);
             char path_letter[path[0][0]];
@@ -368,16 +355,15 @@
             }
 
             send(sock, msg,1, 0);
-            cout<<"sending action "<<msg[0]<<endl;
+            printf("sending action  \n");
             memset(buffer,0,sizeof(buffer));
             read(sock, buffer, 1024);
             printf("Update Message ==>> %s\n", buffer);
 
-            stringstream stream(buffer);
-            stream>>n;
-            starty=n;
-            stream>>n;
-            startx=n;
+
+
+            starty=buffer[count+=2]-48;
+            startx=buffer[count+=2]-48;
 
             switch (msg[0]) {
                 case '1' :
@@ -396,30 +382,26 @@
 
             if (startx==goalx && starty==goaly)
             {
-                cout<<"======================================================"<<endl;
                 msg[0]='0';
                 send(sock, msg,1, 0);
-                printf("Final state ====> ");
+                printf("Final state ====>  ");
                 memset(buffer,0,sizeof(buffer));
                 read(sock, buffer, 1024);
                 printf("%s\n", buffer);
                 break;
             }
 
-            if (buffer[0]=='l' || buffer[0]=='w')
-                break;
-
             for (int j =0 ; j <n_of_dy; ++j)
             {
-                stream>>n;
-                dynamicop[j][1]=n;
-                stream>>n;
-                dynamicop[j][0]=n;
+                dynamicop[j][1]=buffer[count+=2]-48;
+                dynamicop[j][0]=buffer[count+=2]-48;
             }
-            cout<<"======================================================"<<endl;
+
         }
 
-        //cout<<"DONE with counter = "<<count<<endl;
+
+
+
         //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
 
         return 0;
@@ -456,27 +438,22 @@
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int path[][3],int n_of_st,int n_of_dy)
     {
+        const int x=6,y=6;
         bool solved= 0;
-        int child[5][5];
+        int child[x-1][y-1];
         linklist openlist,closedlist;
-        int **huristic;
-
-        huristic= new int*[sizex];
-        for(int i = 0; i < sizex; i++)
-            huristic[i] = new int[sizey];
+        int huristic [x][y];
 
 
-        sethuristic(huristic,goalx,goaly,staticop,n_of_st,dynamicop,n_of_dy,sizex,sizey);
+        sethuristic(huristic,goalx,goaly,staticop,n_of_st,dynamicop,n_of_dy);
 
         openlist.additem(0,huristic[startx][starty],startx,starty,NULL);
-
-
         while (openlist.count>0 && !solved)
         {
             openlist.arrange();
             lenk* node=openlist.get(1);
             openlist.remove(1);
-            genrate(node->x,node->y,child,sizex,sizey);
+            genrate(node->x,node->y,child);
 
             for (int i = 1; i <= child[0][0] ; ++i)
             {
@@ -487,7 +464,6 @@
                     solved=1;
                     break;
                 }
-
                 child[i][2]=node->g+1+huristic[child[i][0]][child[i][1]];
                 openlist.check1(child);
                 closedlist.check2(child);
@@ -526,7 +502,7 @@
         tmp[count]='G';
     }
 
-    void genrate (int px, int py ,int child[][5],int sizex,int sizey)
+    void genrate (int px, int py ,int child[][5])
     {
         int id;
         for (int i = 0; i <5 ; ++i)
@@ -534,109 +510,76 @@
                 child[i][j]=1;
 
         child[0][0]=0;
-        if(px+1>=0 && px+1 <=sizex-1) {
+        if(px+1>=0 && px+1 <=5) {
             id=++child[0][0];
             child[id][0] = px + 1;
             child[id][1] = py;
         }
 
-        if(px-1>=0 && px-1 <=sizex-1) {
+        if(px-1>=0 && px-1 <=5) {
             id=++child[0][0];
             child[id][0] = px - 1;
             child[id][1] = py;
         }
-        if(py+1>=0 && py+1 <=sizey-1) {
+        if(py+1>=0 && py+1 <=5) {
             id=++child[0][0];
             child[id][0] = px;
             child[id][1] = py+1;
         }
-        if(py-1>=0 && py-1 <=sizey-1) {
+        if(py-1>=0 && py-1 <=5) {
             id=++child[0][0];
             child[id][0] = px;
             child[id][1] = py-1;
         }
     }
-    void sethuristic (int** huristic,int goalx, int goaly,int staticop[][2],int n_of_st,int dynamicop[][2],int n_of_dy,int sizex, int sizey)
+    void sethuristic (int huristic[][6],int goalx, int goaly,int staticop[][2],int n_of_st,int dynamicop[][2],int n_of_dy)
     {
-        int factor=15;
-        int histcount=3;
-        int step=1;
-        int total =sizex*sizey;
-        int hist[1][2];
-        double** temp;
-        double** prob;
-        double** huristic_prob;
-        int c=0;
+        int hist[1][2]={{2,2}};
+        double prob[36][3];
 
-        huristic_prob = new double*[sizex];
-        for(int i = 0; i < sizex; i++)
-            huristic_prob[i] = new double[sizey];
-
-        prob = new double*[total];
-        for(int i = 0; i < total; i++)
-            prob[i] = new double[histcount];
-
-        for (int l = 0; l <total; ++l)
-            for (int i = 0; i <histcount; ++i)
+        for (int l = 0; l <36; ++l)
+            for (int i = 0; i <3; ++i)
                 prob[l][i]=0;
 
-        temp = new double*[total];
-        for(int i = 0; i < total; i++)
-            temp[i] = new double[histcount];
-
-
-        for (int i = 0; i <sizex ; ++i) {
-            for (int j = 0; j <sizey; ++j) {
+        for (int i = 0; i <6 ; ++i) {
+            for (int j = 0; j <6; ++j) {
                 huristic[i][j]=dist(i,j,goalx,goaly);
             }
         }
 
-        for (int m = 0; m <n_of_dy; ++m)
-        {
-            for (int l = 0; l <total; ++l)
-                for (int i = 0; i <histcount; ++i)
-                    temp[l][i]=0;
+        int step=2;
+        getProb(3,hist,6,6,prob,step);
 
-            hist[0][0]=dynamicop[m][0];
-            hist[0][1]=dynamicop[m][1];
-            getProb(histcount,hist,sizex,sizey,temp,step);
 
-            for (int j = 0; j <total ; ++j)
-            {
-                prob[j][0]+=temp[j][0];
+        cout<<"======================================================"<<endl;
+
+        /*for (int l = 0; l <36; ++l) {
+            for (int i = 0; i <3; ++i) {
+                cout<<prob[l][i]<<"\t";
             }
-        }
+            cout<<endl;
+        }*/
+
+        cout<<"======================================================"<<endl;
+
+        huristic[goalx][goaly]=0;
+
 
         for (int k = 0; k <n_of_st; ++k) {
             huristic[staticop[k][0]][staticop[k][1]]=1000;
         }
 
+        for (int k = 0; k <n_of_dy; ++k) {
+            huristic[dynamicop[k][0]][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]+1][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]-1][dynamicop[k][1]]+=2;
+            huristic[dynamicop[k][0]][dynamicop[k][1]+1]+=2;
+            huristic[dynamicop[k][0]][dynamicop[k][1]-1]+=2;
 
-        for (int l = 0; l <sizex; ++l) {
-            for (int i = 0; i <sizey; ++i)  // put histcount when need to use
-            {
-                huristic_prob[l][i]=prob[c++][0]*factor;
-                huristic[l][i]+=huristic_prob[l][i];
-            }
         }
 
-        //cout<<"======================================================"<<endl;
-
-        /*for (int l = 0; l <sizex; ++l) {
-            for (int i = 0; i <sizey; ++i)
-            {
-                cout<<huristic_prob[l][i]<<"\t";
-            }
-            cout<<endl;
-        }*/
-
-        //cout<<"======================================================"<<endl;
-
-        huristic[goalx][goaly]=0;
-
-       /* cout << "huristic value \n";
-        for (int i = 0; i < sizex; ++i) {
-            for (int j = 0; j < sizey ; ++j) {
+        /*for (int i = 0; i < 6; ++i) {
+            for (int j = 0; j < 6 ; ++j) {
                 cout<<huristic[i][j]<<"\t";
              }
             cout<<endl;
@@ -652,7 +595,7 @@
     void display(int path[][3],char path_letter[],int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int n_of_st,int n_of_dy)
     {
-        char map[sizex][sizey];
+        char map[6][6];
 
         for (int i = 0; i <sizex; ++i)
             for (int j = 0; j <sizey; ++j)

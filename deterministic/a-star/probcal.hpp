@@ -37,11 +37,11 @@ void printMatrix(int** grid){
   * @param cols - Number of columns
   * @param prob - Pass by ref matrix of dynamic obstacle probability (size)x3
   */
-void getProb (int n_hist, int history[][2], int rows, int cols, double prob [][3], int steps)
+void getProb (int n_hist, int history[][2], int rows, int cols, double ** prob , int steps)
 {
     // Without using the history...
-    int currCol = history[0][0];
-    int currRow = history[0][1];
+    int currCol = history[0][1];
+    int currRow = history[0][0];
 
     int** grid;
     grid=new int *[rows];
@@ -299,7 +299,11 @@ std::vector<pair<double, string>> getTransProb (string state, int rows, int cols
             int hist[1][2]={{coord.first, coord.second}};
 
             // TODO Hard coded! This is not good
-            double prob[36][3];
+            double** prob;
+            prob=new double *[36];
+            for (int i = 0; i <36; ++i)
+                prob[i]=new double [3];
+
             getProb(3, hist, rows, cols, prob, 3);
 
         }
