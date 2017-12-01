@@ -271,21 +271,23 @@
     void display(int path[][3],char path_letter[],int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
                  int sizey,int n_of_st,int n_of_dy);
 
-    void sethuristic (int** huristic,int goalx, int goaly,int staticop[][2],int n_of_st, int dynamicop[][2],int n_of_dy,int sizex, int sizey);
+    void sethuristic (int** huristic,int goalx, int goaly,int staticop[][2],int n_of_st, int dynamicop[][2],int n_of_dy,int sizex, int sizey,int factor);
 
     int dist(int sx,int sy,int gx , int gy);
     void genrate (int px, int py ,int child[][5],int sizex,int sizey);
     void path_convereter(int path[][3],char tmp[]);
 
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
-                 int sizey,int path[][3],int n_of_st,int n_of_dy);
-
+                 int sizey,int path[][3],int n_of_st,int n_of_dy,int factor);
 
 
     void initialize_connection (int & sock);
 
-    int main()
+
+
+    int main(int argc, char *argv[])
     {
+
 
         int startx , starty , goalx , goaly;
         int sizex;
@@ -293,10 +295,14 @@
         int n_of_st;
         int n_of_dy;
         int count=0,c=0;
+        int factor=15;
+
+        if(argc>1)
+            factor=stoi(argv[1]);
 
         int path[100][3];
 
-        long ms=0.0 ;
+        auto ms=long(0.0);
 
         int sock = 0;
         char msg[1024] = "start";
@@ -363,7 +369,7 @@
 
             auto t1 = high_resolution_clock::now();
 
-            a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy);
+            a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy,factor);
             char path_letter[path[0][0]];
             path_convereter(path, path_letter);
             //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
@@ -471,7 +477,7 @@
     }
 
     void a_star (int startx, int starty,int goalx,int goaly,int staticop[][2],int dynamicop[][2],int sizex,
-                 int sizey,int path[][3],int n_of_st,int n_of_dy)
+                 int sizey,int path[][3],int n_of_st,int n_of_dy,int factor)
     {
         bool solved= 0;
         int child[5][5];
@@ -483,7 +489,7 @@
             huristic[i] = new int[sizey];
 
 
-        sethuristic(huristic,goalx,goaly,staticop,n_of_st,dynamicop,n_of_dy,sizex,sizey);
+        sethuristic(huristic,goalx,goaly,staticop,n_of_st,dynamicop,n_of_dy,sizex,sizey,factor);
 
         openlist.additem(0,huristic[startx][starty],startx,starty,NULL);
 
@@ -573,9 +579,8 @@
             child[id][1] = py-1;
         }
     }
-    void sethuristic (int** huristic,int goalx, int goaly,int staticop[][2],int n_of_st,int dynamicop[][2],int n_of_dy,int sizex, int sizey)
+    void sethuristic (int** huristic,int goalx, int goaly,int staticop[][2],int n_of_st,int dynamicop[][2],int n_of_dy,int sizex, int sizey,int factor)
     {
-        int factor=15;
         int histcount=3;
         int step=1;
         int total =sizex*sizey;
