@@ -6,10 +6,13 @@
     #include <string.h>
     #include <arpa/inet.h>
     #include <unistd.h>
-
     #include"probcal.hpp"
+    #include <chrono>
+    #include <fstream>
+
     #define PORT 4000
     using namespace std;
+    using namespace chrono;
 
     struct sockaddr_in address;
     struct sockaddr_in serv_addr;
@@ -293,6 +296,7 @@
 
         int path[100][3];
 
+        long ms=0.0 ;
 
         int sock = 0;
         char msg[1024] = "start";
@@ -357,6 +361,8 @@
             path[0][0]=0;
             cout<<"start position==> "<<startx<<"\t"<<starty<<endl;
 
+            auto t1 = high_resolution_clock::now();
+
             a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy);
             char path_letter[path[0][0]];
             path_convereter(path, path_letter);
@@ -366,6 +372,9 @@
                 msg[c++] = path_letter[i];
                 msg[c++] = ' ';
             }
+            auto t2 = high_resolution_clock::now();
+            auto diff = duration_cast<duration<double>>(t2 - t1);
+            ms += (long)(1000*diff.count());
 
             send(sock, msg,1, 0);
             cout<<"sending action "<<msg[0]<<endl;
@@ -419,7 +428,15 @@
             cout<<"======================================================"<<endl;
         }
 
-        //cout<<"DONE with counter = "<<count<<endl;
+        cout<<"DONE with Time = "<<ms<<endl;
+
+        ofstream result;
+        result.open ("output.txt");
+        result <<buffer<<endl;
+        result <<ms;
+        result.close();
+
+
         //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
 
         return 0;
