@@ -21,6 +21,14 @@ int coordsToNum(int cols, int row, int col)
     return row * cols + col;
 }
 
+string numToCoordStr(int num, int cols)
+{
+    int row = num / cols;
+    int col = num % cols;
+
+    return to_string(row) + "," + to_string(col);
+}
+
 void printMatrix(int** grid){
     for (int r = 0; r <6; r++) {
         for (int c = 0; c < 6; c++)
@@ -275,6 +283,46 @@ vector<double> getProbVect (int n_hist, int history[][2], int rows, int cols, in
 }
 
 /**
+ * Recursive function to calculate trans prob
+ * @param currProb
+ * @param state
+ * @param probIndex
+ * @param probs
+ * @param cols
+ * @param result
+ */
+vector<pair<double, string>> calcTransProb (double currProb, string state, int probIndex, vector<vector<double>> probs, int cols, vector<pair<double, string>> thisResult)
+{
+    vector<double> thisProb = probs[probIndex];
+    //vector<pair<double, string>> thisResult;
+    for(int thisPos = 0; thisPos < thisProb.size(); thisPos++) {
+        if(thisProb[thisPos] > 0) {
+            double thisPosProb = thisProb[thisPos] * currProb;
+            string test = numToCoordStr(thisPos, cols);
+            string newState;
+            if (state.size() == 0) {
+                newState = test;
+            } else {
+                newState = state + "," + test;
+            }
+            probIndex += 1;
+            if (probIndex < probs.size()) {
+                thisResult = calcTransProb(thisPosProb, newState, probIndex, probs, cols, thisResult);
+            } else {
+                pair<double, string> transProb;
+                transProb.first = thisPosProb;
+                transProb.second = newState;
+
+                thisResult.push_back(transProb);
+            }
+            probIndex -= 1;
+        }
+    }
+
+    return thisResult;
+}
+
+/**
  * Get the transition probability
  * @param state - string representation of the state
  * @param rows - Number of rows in the grid world
@@ -318,22 +366,50 @@ std::vector<pair<double, string>> getTransProb (string state, int rows, int cols
 
             int hist[1][2] = {{coord.first, coord.second}};
 
-            vector<double> prob = getProbVect(3, hist, rows, cols, 3);
+            vector<double> prob = getProbVect(3, hist, rows, cols, 1);
             probs.push_back(prob);
+        }
+    }
 
-            for (int l = 0; l < 36; ++l) {
-                cout << prob[l];
+    //TODO Use probs to calc trans prop. Need to use recursion!
+    /*for(int currP = 0; currP < probs.size(); currP++){
+        vector<double> currProb = probs[currP];
+
+        for(int currPos = 0; currPos < currProb.size(); currPos++){
+            double currPosProb = currProb[currPos];
+            if(currPosProb > 0){
+
+                for(int othP = 0; othP < probs.size(); othP++) {
+                    if(othP == currP)
+                        continue;
+
+                    vector<double> othProb = probs[othP];
+                    for(int othPos = 0; othPos < othProb.size(); othPos++) {
+                        double othPosProb = othProb[othPos];
+                        if (othPosProb > 0) {
+                            double transProb = currPosProb * othPosProb;
+                            string state =
+                            pair<double, string>
+                        }
+                    }
+                }
+
             }
         }
+    }*/
+
+    result = calcTransProb(1, "", 0, probs, cols, result);
+
+    // Check
+    /*cout << "\nResult size: " << result.size();
+
+    double sum = 0;
+    for(int r = 0; r < result.size(); r++){
+        sum += result[r].first;
+        cout << "\nState: " << result[r].second;
     }
 
-    for(auto prob: probs){
-        for(int x = 0; x < prob.size(); x++){
-
-        }
-    }
-
-    //TODO Use probs to calc trans prob
+    cout << "\nResult Sum: " << sum;*/
 
     return result;
 }
