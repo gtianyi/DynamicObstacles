@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(a_star)
+project(Lss_lrta_star)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -9,4 +9,4 @@ set(SOURCE_FILES
 
 include_directories(.)
 
-add_executable(a_star ${SOURCE_FILES})
+add_executable(Lss_lrta_star ${SOURCE_FILES})

@@ -288,14 +288,15 @@
     int main(int argc, char *argv[])
     {
 
-	auto start = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         int startx , starty , goalx , goaly;
         int sizex;
         int sizey;
         int n_of_st;
         int n_of_dy;
         int count=0,c=0;
-        int factor=10;
+        int factor=1000;
+
 
         if(argc>1)
             factor=stoi(argv[1]);
@@ -369,6 +370,7 @@
 
             start = std::chrono::high_resolution_clock::now();
 
+
             a_star(startx, starty, goalx, goaly, staticop, dynamicop, sizex, sizey, path, n_of_st, n_of_dy,factor);
             char path_letter[path[0][0]];
             path_convereter(path, path_letter);
@@ -378,9 +380,11 @@
                 msg[c++] = path_letter[i];
                 msg[c++] = ' ';
             }
-            
-	        auto finish = std::chrono::high_resolution_clock::now();
+
+            auto finish = std::chrono::high_resolution_clock::now();
+
             //std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count() << "ns\n";
+
             ns +=(finish-start).count();
 
             send(sock, msg,1, 0);
@@ -435,7 +439,7 @@
             cout<<"======================================================"<<endl;
         }
 
-        cout<<"DONE with Time = "<<ns/1000<<endl;
+        cout<<"DONE with Time = "<<ns/1000.0<<endl;
 
         ofstream result;
         result.open ("output.txt");
@@ -445,6 +449,8 @@
 
 
         //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
+
+
 
         return 0;
     }
@@ -483,7 +489,8 @@
         bool solved= 0;
         int child[5][5];
         linklist openlist,closedlist;
-        int **huristic;
+        int ** huristic;
+        int iter=0;
 
         huristic= new int*[sizex];
         for(int i = 0; i < sizex; i++)
@@ -495,8 +502,9 @@
         openlist.additem(0,huristic[startx][starty],startx,starty,NULL);
 
 
-        while (openlist.count>0 && !solved)
+        while ( openlist.count>0 && !solved && iter<3 )
         {
+            iter++;
             openlist.arrange();
             lenk* node=openlist.get(1);
             openlist.remove(1);
@@ -528,6 +536,7 @@
             cout <<"closedlist \n";
             closedlist.display();*/
         }
+        cout<<"number of iteration = "<<iter<<endl;
     openlist.getpath(path);
     }
 
@@ -657,7 +666,7 @@
 
         huristic[goalx][goaly]=0;
 
-       /* cout << "huristic value \n";
+        /*cout << "huristic value \n";
         for (int i = 0; i < sizex; ++i) {
             for (int j = 0; j < sizey ; ++j) {
                 cout<<huristic[i][j]<<"\t";
