@@ -37,7 +37,7 @@ void printMatrix(int** grid){
   * @param cols - Number of columns
   * @param prob - Pass by ref matrix of dynamic obstacle probability (size)x3
   */
-void getProb (int n_hist, int history[][2], int rows, int cols, double ** prob , int steps)
+void getProb (int n_hist, int history[][2], int rows, int cols, double **prob, int steps)
 {
     // Without using the history...
     int currCol = history[0][1];
@@ -152,17 +152,18 @@ void getProb (int n_hist, int history[][2], int rows, int cols, double ** prob ,
     }
 }
 
-/*vector<vector<double>> getProb (int n_hist, int history[][2], int rows, int cols)
+vector<double> getProbVect (int n_hist, int history[][2], int rows, int cols, int steps)
 {
-    //vector<vector<double>> prob (vector<double>, rows);
-    vector<double> rowVect (0.0, rows);
-    vector<vector<double>> prob (rowVect, cols);
+    vector<double> prob(rows*cols, 0.0);
 
     // Without using the history...
     int currCol = history[0][0];
     int currRow = history[0][1];
 
-    int grid [rows][cols];
+    int** grid;
+    grid=new int *[rows];
+    for (int i = 0; i <rows; ++i)
+        grid[i]=new int [cols];
 
     // Set initial prob
     grid[currRow][currCol] = 1;
@@ -196,15 +197,19 @@ void getProb (int n_hist, int history[][2], int rows, int cols, double ** prob ,
     for(int row = 0; row < rows; row ++) {
         for (int col = 0; col < cols; col++) {
             if(grid[row][col] > 0) {
-                prob[coordsToNum(cols, row, col)][0] = grid[row][col] / 5.0;
-                prob.push_back()
+                prob[coordsToNum(cols, row, col)] = grid[row][col] / 5.0;
             }
         }
     }
 
     int lastCount = 5;
 
-    for(int step = 1; step < 3; step++) {
+    for(int step = 2; step <= steps; step++) {
+        int** newGrid;
+        newGrid=new int *[rows];
+        for (int i = 0; i <rows; ++i)
+            newGrid[i]=new int [cols];
+
         // Loop through all grid spaces and inc counters
         int countTotal = lastCount;
         for(int row = 0; row < rows; row ++) {
@@ -215,32 +220,35 @@ void getProb (int n_hist, int history[][2], int rows, int cols, double ** prob ,
                     upRow = row + 1;
                     downRow = row - 1;
 
+                    newGrid[row][col] += grid[row][col] + 1;
+                    countTotal++;
+
                     if (horizontalWallCollision(rows, upRow)) {
-                        grid[row][col]++;
+                        newGrid[row][col]++;
                         countTotal++;
                     } else {
-                        grid[upRow][col]++;
+                        newGrid[upRow][col]++;
                         countTotal++;
                     }
                     if (horizontalWallCollision(rows, downRow)) {
-                        grid[row][col]++;
+                        newGrid[row][col]++;
                         countTotal++;
                     } else {
-                        grid[downRow][col]++;
+                        newGrid[downRow][col]++;
                         countTotal++;
                     }
                     if (verticalWallCollision(cols, leftCol)) {
-                        grid[row][col]++;
+                        newGrid[row][col]++;
                         countTotal++;
                     } else {
-                        grid[row][leftCol]++;
+                        newGrid[row][leftCol]++;
                         countTotal++;
                     }
                     if (verticalWallCollision(cols, rightCol)) {
-                        grid[row][col]++;
+                        newGrid[row][col]++;
                         countTotal++;
                     } else {
-                        grid[row][rightCol]++;
+                        newGrid[row][rightCol]++;
                         countTotal++;
                     }
                 }
@@ -248,18 +256,23 @@ void getProb (int n_hist, int history[][2], int rows, int cols, double ** prob ,
         }
 
         lastCount = countTotal;
-
         double sum = 0;
         for(int row = 0; row < rows; row ++) {
             for (int col = 0; col < cols; col++) {
-                if(grid[row][col] > 0) {
-                    prob[coordsToNum(cols, row, col)][0] = grid[row][col] / (double)countTotal;
-                    sum += grid[row][col] / (double)countTotal;
+                if(newGrid[row][col] > 0) {
+                    prob[coordsToNum(cols, row, col)] = newGrid[row][col] / (double)countTotal;
+                    sum += newGrid[row][col] / (double)countTotal;
                 }
             }
         }
+
+        cout << "\n sum: " << sum;
+
+        grid = newGrid;
     }
-}*/
+
+    return prob;
+}
 
 /**
  * Get the transition probability
@@ -274,9 +287,16 @@ std::vector<pair<double, string>> getTransProb (string state, int rows, int cols
 
     vector<pair<double, string>> result;
     pair<int, int> coord;
-    std::stringstream ss(state);
 
     //vector<> probs;
+    int** newGrid;
+    newGrid=new int *[rows];
+    for (int i = 0; i <rows; ++i)
+        newGrid[i]=new int [cols];
+
+    std::stringstream ss(state);
+
+    vector<vector<double>> probs;
 
     int i;
     int count = 0;
@@ -296,15 +316,19 @@ std::vector<pair<double, string>> getTransProb (string state, int rows, int cols
         if (count >= 2) {
             count = 0;
 
-            int hist[1][2]={{coord.first, coord.second}};
+            int hist[1][2] = {{coord.first, coord.second}};
 
-            // TODO Hard coded! This is not good
-            double** prob;
-            prob=new double *[36];
-            for (int i = 0; i <36; ++i)
-                prob[i]=new double [3];
+            vector<double> prob = getProbVect(3, hist, rows, cols, 3);
+            probs.push_back(prob);
 
-            getProb(3, hist, rows, cols, prob, 3);
+            for (int l = 0; l < 36; ++l) {
+                cout << prob[l];
+            }
+        }
+    }
+
+    for(auto prob: probs){
+        for(int x = 0; x < prob.size(); x++){
 
         }
     }
