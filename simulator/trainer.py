@@ -11,8 +11,8 @@ SEEDED = False
 class Grid:
     def __init__(self, row=6, col=6, sta = 2, dyn = 2):
         self.win = 0
-        self.width = row
-        self.height = col
+        self.height = row
+        self.width = col
         self.agent = Agent(0, 0)
         self.goal = Object(self.width - 1, self.height - 1)
         self.staticObstacles = []
