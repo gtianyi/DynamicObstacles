@@ -233,43 +233,43 @@ def createSocket( port ):
 
 
 if __name__ == "__main__":
-    timeframe = 0.5
     PRINTOUT = False
     SEEDED = False
 
     parser = argparse.ArgumentParser(description='Start a simulator training server.')
-    parser.add_argument('-s','--seed', action='store_true',default=False, help='Import seed for random numbers')
-    parser.add_argument('-p','--plot', action='store_true',default=False,help='Turn on simple plot')
+    parser.add_argument('-s', '--seed', action='store', dest='seed', default='', help='Import seed for random numbers')
+    parser.add_argument('-p', '--plot', action='store_true', dest='plot', default=False, help='Turn on simple plot')
+    parser.add_argument('-c', '--constant', action='store', dest='constant', help='input constant')
+    parser.add_argument('-row', action='store', dest='row', default='6', help='Import row size for grid')
+    parser.add_argument('-col', action='store', dest='col', default='6', help='Import row size for grid')
+    parser.add_argument('-sta', action='store', dest='sta', default='2',
+                        help='Import number of static obstacles for grid')
+    parser.add_argument('-dyn', action='store', dest='dyn', default='2',
+                        help='Import number of dynamic obstacles for grid')
     args = parser.parse_args()
     PRINTOUT = vars(args)['plot']
     SEEDED = vars(args)['seed']
+    ROW = int(vars(args)['row'])
+    COL = int(vars(args)['col'])
+    STA = int(vars(args)['sta'])
+    DYN = int(vars(args)['dyn'])
 
-    connection = createSocket(3000)
 
     if SEEDED:
-        random.seed(13)
+        random.seed(int(SEEDED))
     # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
-    game = Grid(10, 10, 5, 5)
+    game = Grid(ROW, COL, STA, DYN)
     storage = deepcopy(game)
     if PRINTOUT:
         game.simplePlot()
 
+    connection = createSocket(3000)
     data = connection.recv(2048).decode("utf-8")
     if data == "start":
         connection.sendall(game.dump('init').encode("utf-8"))
 
 
     while True:
-        # if SEEDED:
-        #     random.seed(13)
-        # # set Grid parameters in the next line. Grid(10,10,5,3) means 10 by 10 map with 5 static and 3 dynamic obstacles
-        # game = Grid(10,10,5,5)
-        # if PRINTOUT:
-        #     game.simplePlot()
-        #
-        # data = connection.recv(2048).decode("utf-8")
-        # if data == "start":
-        #     connection.sendall(game.dump('init').encode("utf-8"))
         game = deepcopy(storage)
 
         while True:
