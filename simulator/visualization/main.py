@@ -3,7 +3,12 @@ from trainer import *
 import time
 import random
 
-# random.seed(51)
+parser = argparse.ArgumentParser(description='Start a simulator training server.')
+parser.add_argument('-s', '--seed', action='store', default='', help='Import seed for random numbers')
+args = parser.parse_args()
+SEEDED = vars(args)['seed']
+if SEEDED:
+    random.seed(int(SEEDED))
 game = Grid(10, 10, 5, 5)
 PRINTOUT = True
 
