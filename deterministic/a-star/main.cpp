@@ -312,11 +312,11 @@
         initialize_connection (sock);
 
         send(sock,  msg,  strlen(msg),  0 );
-        printf("hello let's start playing \n" );
+        //printf("hello let's start playing \n" );
         read( sock,  buffer,  1024);
-        printf("%s\n", buffer );
+        //printf("%s\n", buffer );
 
-        cout<<"======================================================"<<endl;
+        //cout<<"======================================================"<<endl;
 
         stringstream stream(buffer);
 
@@ -365,7 +365,7 @@
             count++;
             c=0;
             path[0][0]=0;
-            cout<<"start position==> "<<startx<<"\t"<<starty<<endl;
+            //cout<<"start position==> "<<startx<<"\t"<<starty<<endl;
 
             start = std::chrono::high_resolution_clock::now();
 
@@ -384,10 +384,10 @@
             ns +=(finish-start).count();
 
             send(sock, msg,1, 0);
-            cout<<"sending action "<<msg[0]<<endl;
+            //cout<<"sending action "<<msg[0]<<endl;
             memset(buffer,0,sizeof(buffer));
             read(sock, buffer, 1024);
-            printf("Update Message ==>> %s\n", buffer);
+            //printf("Update Message ==>> %s\n", buffer);
 
             stringstream stream(buffer);
             stream>>n;
@@ -412,13 +412,13 @@
 
             if (startx==goalx && starty==goaly)
             {
-                cout<<"======================================================"<<endl;
+                //cout<<"======================================================"<<endl;
                 msg[0]='0';
                 send(sock, msg,1, 0);
-                printf("Final state ====> ");
+                //printf("Final state ====> ");
                 memset(buffer,0,sizeof(buffer));
                 read(sock, buffer, 1024);
-                printf("%s\n", buffer);
+                //printf("%s\n", buffer);
                 break;
             }
 
@@ -432,16 +432,19 @@
                 stream>>n;
                 dynamicop[j][0]=n;
             }
-            cout<<"======================================================"<<endl;
+            //cout<<"======================================================"<<endl;
         }
 
-        cout<<"DONE with Time = "<<ns/1000<<endl;
+        cout<<"result "<<buffer<<endl;
+        cout<<"time "<<ns/1000<<endl;
 
         ofstream result;
         result.open ("output.txt");
-        result <<buffer<<endl;
-        result <<ns/1000;
+        result <<"result "<<buffer<<endl;
+        result <<"time "<<ns/1000;
         result.close();
+
+
 
 
         //display(path,path_letter,startx,starty,goalx,goaly,staticop,dynamicop,sizex,sizey,n_of_st,n_of_dy);
