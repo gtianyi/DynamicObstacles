@@ -26,7 +26,7 @@ string numToCoordStr(int num, int cols)
     int row = num / cols;
     int col = num % cols;
 
-    return to_string(row) + "," + to_string(col);
+    return to_string(row) + " " + to_string(col);
 }
 
 void printMatrix(int** grid){
@@ -303,7 +303,7 @@ vector<pair<double, string>> calcTransProb (double currProb, string state, int p
             if (state.size() == 0) {
                 newState = test;
             } else {
-                newState = state + "," + test;
+                newState = state + " " + test;
             }
             probIndex += 1;
             if (probIndex < probs.size()) {
@@ -357,7 +357,7 @@ std::vector<pair<double, string>> getTransProb (string state, int rows, int cols
         else
             coord.second = i;
 
-        if (ss.peek() == ',')
+        if (ss.peek() == ' ')
             ss.ignore();
 
         // New coord
