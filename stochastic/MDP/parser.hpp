@@ -24,10 +24,10 @@ AlgParameters parseArguments(int argc, char *argv[]) {
 
 string sendRequestAndGetReturn(int sock, string req){
     send(sock, req.c_str(), req.length(), 0);
-    cout <<  "Sent message: " << req <<  endl;
+    // cout <<  "Sent message: " << req <<  endl;
     char buffer[1024] =  {0};
     read(sock, buffer, 1024);
-    cout << "received: " << buffer << endl;
+    // cout << "received: " << buffer << endl;
     return string(buffer);
 }
 

@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include"../../deterministic/a-star/probcal.hpp"
 #include <cfloat>
+#include <math.h>
 
 using namespace std;
 
