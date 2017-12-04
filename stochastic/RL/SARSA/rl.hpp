@@ -77,11 +77,13 @@ private:
             double step = 1.0;
 
             int a = chooseAction(curState);
-            msg = getStateByActionViaSocket(trainSock, to_string(a));//chose a action
+            //chose a action
             //cout << "Action" << a << endl;
             bool statereached = false;
-            while(msg != "lose" || msg != "win"){
-                
+            while(msg != "lose" && msg != "win"){
+
+                msg = getStateByActionViaSocket(trainSock, to_string(a));
+                int ap = chooseAction(curState);
                 // cout << "Qvalue: "
                  // << curState->Q[0] <<  " "
                  // << curState->Q[1] <<  " "
@@ -98,12 +100,10 @@ private:
                 if(msg == "lose"){
                     reward = -1000;
                     nextQ = -1000;
-                    statereached = true;
                 }
                 else if(msg == "win"){
                     reward = 1000;
                     nextQ = 1000;
-                    statereached = true;
                 }
                 else{
                     if(states.find(msg) != states.end()){
@@ -113,19 +113,15 @@ private:
                         nextS = make_shared<State>();
                         states[msg] = nextS;
                     }
-                    nextQ = nextS->bestQ;
+                    nextQ = nextS->Q[ap];
                     reward = nextS->reward;
                 }
                 curState->Q[a] += 1.0 / step *
                         (reward + parameter.gamma *nextQ
                          - curState->Q[a]);
                 curState = nextS;//action also changes
+                a=ap;
                 step += 1.0;
-
-                if(statereached) break;
-
-                int a = chooseAction(curState);
-                msg = getStateByActionViaSocket(trainSock, to_string(a));
             }
         }
     }
