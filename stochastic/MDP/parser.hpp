@@ -16,7 +16,8 @@ AlgParameters parseArguments(int argc, char *argv[]) {
     options.add_options()
             ("a, algorithm", "algorithm name", cxxopts::value(p.alg))
             ("g, gamma", "discoount factor", cxxopts::value(p.gamma))
-            ("n, num", "number of episold", cxxopts::value(p.simNum));
+            ("n, num", "number of episold", cxxopts::value(p.simNum))
+            ("d, depth", "uct depth", cxxopts::value(p.depth));;
     //clang - format on
     options.parse(argc, argv);
     return p;

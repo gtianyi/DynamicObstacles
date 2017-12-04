@@ -105,7 +105,7 @@ private:
     }
 
     float simulate(shared_ptr<Node> state, int depth){
-        cout << "sim " << depth << endl;
+        // cout << "sim " << depth << endl;
         if (depth == 0){
             return 0;
         }
@@ -204,7 +204,7 @@ private:
         string nextDynStr;
         int i = 0;
         for (const auto &t : trans){
-            cout << i++ << endl;
+            // cout << i++ << endl;
             paccumulateT = accumulateT;
             accumulateT += t.first;
             if (curdie <= accumulateT && curdie >= paccumulateT){

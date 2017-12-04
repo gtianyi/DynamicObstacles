@@ -19,7 +19,6 @@ public:
     };
 
     void run(int runSocket, int trainSocket){
-         cout << "running now..." << endl;
          if(parameter.alg == "qlearning" ||
             parameter.alg == "sarsa"){
              training(trainSocket);
@@ -165,6 +164,7 @@ private:
     }
 
     void runOffLineApproach(int _sock){
+        cout << "running now..." << endl;
         runSock = _sock;
         shared_ptr<State> curState = start;
         int steps = 0;
@@ -187,13 +187,18 @@ private:
                 cout << steps << endl;
                 break;
             }
-            if(states.find(msg) != states.end()) curState = states[msg];
-            else curState = nullptr;
+            if(states.find(msg) != states.end())
+                curState = states[msg];
+            else {
+                curState = nullptr;
+                cout << "new state" << endl;
+            }
             steps++;
         }
     }
 
     void runOnlineApproach(int runSocket, int trainSocket){
+        cout << "running now..." << endl;
         if(parameter.alg == "uct" ){
              uctOnline(runSocket);
          }
