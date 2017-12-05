@@ -223,7 +223,7 @@ class StaticObstacle(Object):
 def createSocket( port ):
     sock, connection = 0, 0
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 2048)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 2048)
     server_address = ('localhost', port)
     print ('starting up on %s port %s' % server_address)
     sock.bind(server_address)
