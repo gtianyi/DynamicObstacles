@@ -168,10 +168,14 @@ vector<double> getProbVect (int n_hist, int history[][2], int rows, int cols, in
     int currCol = history[0][0];
     int currRow = history[0][1];
 
-    int** grid;
-    grid=new int *[rows];
-    for (int i = 0; i <rows; ++i)
-        grid[i]=new int [cols];
+    vector<vector<int>> grid;
+    for (int i = 0; i <rows; ++i){
+        vector<int> row;
+        for (int j = 0; j < cols; j++){
+            row.push_back(0);
+        }
+        grid.push_back(row);
+    }
 
     // Set initial prob
     grid[currRow][currCol] = 1;
@@ -209,76 +213,7 @@ vector<double> getProbVect (int n_hist, int history[][2], int rows, int cols, in
             }
         }
     }
-
-    int lastCount = 5;
-
-    for(int step = 2; step <= steps; step++) {
-        int** newGrid;
-        newGrid=new int *[rows];
-        for (int i = 0; i <rows; ++i)
-            newGrid[i]=new int [cols];
-
-        // Loop through all grid spaces and inc counters
-        int countTotal = lastCount;
-        for(int row = 0; row < rows; row ++) {
-            for(int col = 0; col < cols; col ++) {
-                if(grid[row][col] > 0) {
-                    leftCol = col - 1;
-                    rightCol = col + 1;
-                    upRow = row + 1;
-                    downRow = row - 1;
-
-                    newGrid[row][col] += grid[row][col] + 1;
-                    countTotal++;
-
-                    if (horizontalWallCollision(rows, upRow)) {
-                        newGrid[row][col]++;
-                        countTotal++;
-                    } else {
-                        newGrid[upRow][col]++;
-                        countTotal++;
-                    }
-                    if (horizontalWallCollision(rows, downRow)) {
-                        newGrid[row][col]++;
-                        countTotal++;
-                    } else {
-                        newGrid[downRow][col]++;
-                        countTotal++;
-                    }
-                    if (verticalWallCollision(cols, leftCol)) {
-                        newGrid[row][col]++;
-                        countTotal++;
-                    } else {
-                        newGrid[row][leftCol]++;
-                        countTotal++;
-                    }
-                    if (verticalWallCollision(cols, rightCol)) {
-                        newGrid[row][col]++;
-                        countTotal++;
-                    } else {
-                        newGrid[row][rightCol]++;
-                        countTotal++;
-                    }
-                }
-            }
-        }
-
-        lastCount = countTotal;
-        double sum = 0;
-        for(int row = 0; row < rows; row ++) {
-            for (int col = 0; col < cols; col++) {
-                if(newGrid[row][col] > 0) {
-                    prob[coordsToNum(cols, row, col)] = newGrid[row][col] / (double)countTotal;
-                    sum += newGrid[row][col] / (double)countTotal;
-                }
-            }
-        }
-
-        cout << "\n sum: " << sum;
-
-        grid = newGrid;
-    }
-
+    
     return prob;
 }
 
