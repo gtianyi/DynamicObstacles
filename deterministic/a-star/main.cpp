@@ -435,8 +435,8 @@
             //cout<<"======================================================"<<endl;
         }
 
-        cout<<"result "<<buffer<<endl;
-        cout<<"time "<<ns/1000<<endl;
+        cout<<buffer;
+        cout<<" "<<ns/1000<<endl;
 
         ofstream result;
         result.open ("output.txt");
