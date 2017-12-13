@@ -38,7 +38,7 @@ def autolabel(rects, ax):
                 ha='center', va='bottom')
 
 
-def gen_plot(data, methods, name, width_step=0.2):
+def gen_cpu_plot(data, methods, name, width_step=0.2):
     N = 5
     ind = np.arange(N)  # the x locations for the groups
     width = 0       # the width of the bars
@@ -46,10 +46,12 @@ def gen_plot(data, methods, name, width_step=0.2):
     fig, ax = plt.subplots()
 
     rect_list = list()
+    method_name_list = list()
     for i, method in enumerate(data):
         if method not in methods:
             continue
         print method
+        method_name_list.append(method)
 
         means = list()
         stds = list()
@@ -66,6 +68,7 @@ def gen_plot(data, methods, name, width_step=0.2):
 
     # add some text for labels, title and axes ticks
     ax.set_ylabel('CPU Time (ms)')
+    ax.set_xlabel('Grid Size')
     ax.set_title(name + ' Methods')
     ax.set_xticks(ind + width / 2)
     ax.set_xticklabels(('6', '7', '8', '9', '10'))
@@ -75,9 +78,50 @@ def gen_plot(data, methods, name, width_step=0.2):
         # autolabel(rect, ax)
         r_list.append(rect[0])
 
-    ax.legend(tuple(r_list), tuple(data.keys()))
+    ax.legend(tuple(r_list), tuple(method_name_list))
 
     plt.savefig(name.lower() + '_cpu_time.png')
+
+
+def gen_sr_plot(data):
+    N = 5
+    width_step = 0.15
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0       # the width of the bars
+
+    fig, ax = plt.subplots()
+
+    rect_list = list()
+    method_name_list = list()
+    for i, method in enumerate(data):
+        print method
+        method_name_list.append(method)
+
+        srs = list()
+        for size in grid_sizes:
+            srs.append(data[method][size]['sr'])
+
+        print srs
+
+        rect = ax.bar(ind + width, srs, width_step)
+        rect_list.append(rect)
+        width += width_step
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Wins/Losses')
+    ax.set_xlabel('Grid Size')
+    ax.set_title('Success Rate for All Methods')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(('6', '7', '8', '9', '10'))
+
+    r_list = list()
+    for rect in rect_list:
+        # autolabel(rect, ax)
+        r_list.append(rect[0])
+
+    ax.legend(tuple(r_list), tuple(method_name_list))
+
+    plt.savefig('success_rate.png')
 
 
 def parse_args():
@@ -133,9 +177,9 @@ def main():
 
     print json.dumps(result_dict, indent=1)
 
-    gen_plot(result_dict, deterministic, 'Deterministic', width_step=0.35)
-    gen_plot(result_dict, stochastic, 'Stochastic', width_step=0.2)
-
+    gen_cpu_plot(result_dict, deterministic, 'Deterministic', width_step=0.35)
+    gen_cpu_plot(result_dict, stochastic, 'Stochastic', width_step=0.2)
+    gen_sr_plot(result_dict)
 
 
 if __name__ == "__main__":
